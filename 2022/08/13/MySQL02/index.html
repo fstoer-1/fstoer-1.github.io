@@ -482,19 +482,19 @@
 </blockquote>
 <h2 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h2><blockquote>
 <p>一个事务读到了另外一个事务没有提交的数据 - 绝对不允许的.</p>
-<p><img src="/MySQL02/zang.png">  </p>
+<p><img src="/2022/08/13/MySQL02/zang.png">  </p>
 </blockquote>
 <h2 id="不可重复读"><a href="#不可重复读" class="headerlink" title="不可重复读"></a>不可重复读</h2><blockquote>
 <p>set session transaction isolation level read committed;</p>
 <p>一个事务A在读取一次之后,另外一个事务B在进行update操作.并且commit.</p>
 <p>A事务在没有自己没有提交之前,读取到了B事务提交之后的数据.导致A事务在当前事务中多次读取到的结果不一样.</p>
-<p><img src="/MySQL02/no.png"> </p>
+<p><img src="/2022/08/13/MySQL02/no.png"> </p>
 </blockquote>
 <h2 id="幻读"><a href="#幻读" class="headerlink" title="幻读"></a>幻读</h2><blockquote>
 <p>它和不可重复读类似.侧重点不同.不可重复读强调的是一个事务在查询.另外一个事务在修改(update)</p>
 <p>幻读强调的是一个事务在修改.另外一个事务在插入(insert).</p>
 <p>set session transaction isolation level read committed;</p>
-<p><img src="/MySQL02/huan.png"> </p>
+<p><img src="/2022/08/13/MySQL02/huan.png"> </p>
 </blockquote>
 <blockquote>
 <p>事务A在修改,事务B-insert并且提交了.事务A在本事务中再次查询,发现了好像有”更新失败”的数据.就像发生了幻觉一样.</p>
@@ -506,7 +506,7 @@
 <blockquote>
 <p>事务A读取一次,事务B执行update操作.事务A在没有结束当前事务之前,多次读取到的结果是一样的.</p>
 <p>必须要commit之后,才能够读取到B事务提交之后的修改数据.</p>
-<p><img src="/MySQL02/repeat.png"> </p>
+<p><img src="/2022/08/13/MySQL02/repeat.png"> </p>
 </blockquote>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><table>
 <thead>
