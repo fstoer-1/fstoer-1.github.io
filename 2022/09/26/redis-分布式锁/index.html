@@ -1,0 +1,592 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Redis - 勉~杌子生的博客</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="nginx
+
+反向代理服务器
+负载均衡
+
+
+负载均衡的配置12345678910 upstream ttserver&amp;#123; 		server 192.168.2.216:8088; 		ser,"> 
+    <meta name="author" content="Fstoer BG"> 
+    <link rel="alternative" href="atom.xml" title="勉~杌子生的博客" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+    
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="Redis - 勉~杌子生的博客"/>
+    <meta name="twitter:description" content="nginx
+
+反向代理服务器
+负载均衡
+
+
+负载均衡的配置12345678910 upstream ttserver&amp;#123; 		server 192.168.2.216:8088; 		ser,"/>
+    
+    
+    
+    
+    <meta property="og:site_name" content="勉~杌子生的博客"/>
+    <meta property="og:type" content="object"/>
+    <meta property="og:title" content="Redis - 勉~杌子生的博客"/>
+    <meta property="og:description" content="nginx
+
+反向代理服务器
+负载均衡
+
+
+负载均衡的配置12345678910 upstream ttserver&amp;#123; 		server 192.168.2.216:8088; 		ser,"/>
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script>window.searchDbPath = "/search.xml";</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">勉~杌子生的博客</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://fstoer-1.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Redis</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Redis</h1>
+        <div class="stuff">
+            <span>九月 26, 2022</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" rel="tag">分布式锁</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h1><blockquote>
+<ol>
+<li>反向代理服务器</li>
+<li>负载均衡</li>
+</ol>
+</blockquote>
+<h2 id="负载均衡的配置"><a href="#负载均衡的配置" class="headerlink" title="负载均衡的配置"></a>负载均衡的配置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> upstream ttserver&#123;</span><br><span class="line"> 		server 192.168.2.216:8088;</span><br><span class="line"> 		server 192.168.2.216:8089;</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> server&#123;</span><br><span class="line"> 	location /rcks &#123;</span><br><span class="line">  	proxy_pass   http://ttserver;</span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="负载均衡的策略"><a href="#负载均衡的策略" class="headerlink" title="负载均衡的策略"></a>负载均衡的策略</h2><blockquote>
+<ol>
+<li><p>轮询（默认）</p>
+<p>每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器down掉，能自动剔除。</p>
+</li>
+<li><p>指定权重</p>
+<p>指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">upstream ttserver &#123; </span><br><span class="line">  server 192.168.0.14 weight=8; </span><br><span class="line">  server 192.168.0.15 weight=10; </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>IP绑定 ip_hash</p>
+<p>每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">upstream backserver &#123; </span><br><span class="line">  ip_hash; </span><br><span class="line">  server 192.168.0.14:88; </span><br><span class="line">  server 192.168.0.15:80; </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>fair（第三方）</p>
+<p>按后端服务器的响应时间来分配请求，响应时间短的优先分配。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">upstream backserver &#123; </span><br><span class="line">  server server1; </span><br><span class="line">  server server2; </span><br><span class="line">  fair; </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>url_hash（第三方）</p>
+<p>按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，后端服务器为缓存时比较有效。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="synchronized或者lock属于jvm进程级别的锁"><a href="#synchronized或者lock属于jvm进程级别的锁" class="headerlink" title="synchronized或者lock属于jvm进程级别的锁"></a>synchronized或者lock属于jvm进程级别的锁</h2><blockquote>
+<p>单机下是有效的</p>
+<p>开启了8088和8089俩个实例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;t2&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">()</span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;---8089---&quot;</span>);</span><br><span class="line">    <span class="comment">//1. 查询num值</span></span><br><span class="line">    <span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> redisTemplate.opsForValue().get(<span class="string">&quot;num&quot;</span>);</span><br><span class="line">    <span class="comment">//2. 判断num是否为空</span></span><br><span class="line">    <span class="keyword">if</span> (value == <span class="literal">null</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="string">&quot;error&quot;</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> Integer.parseInt(value + <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="comment">//将num值+1</span></span><br><span class="line">    <span class="comment">//synchronized,lock =&gt; jvm级别的锁</span></span><br><span class="line">    redisTemplate.opsForValue().set(<span class="string">&quot;num&quot;</span>, ++num);<span class="comment">// ++ 不具备原子性</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;ok-8089&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ab -n 1000 -c 100 <a target="_blank" rel="noopener" href="http://192.168.2.216/rcks/t2">http://192.168.2.216/rcks/t2</a></p>
+<p>发现redis中的num小于1000</p>
+</blockquote>
+<h1 id="悲观锁和乐观锁"><a href="#悲观锁和乐观锁" class="headerlink" title="悲观锁和乐观锁"></a>悲观锁和乐观锁</h1><blockquote>
+<p>实现高并发的场景下实现库存扣减</p>
+</blockquote>
+<h2 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h2><blockquote>
+<p>对于同一个数据的并发操作，<strong>悲观锁认为自己在使用数据的时候一定有别的线程来修改数据</strong>，<strong>因此在获取数据的时候会先加锁</strong>，确保数据不会被别的线程修改。Java中，synchronized关键字和Lock的实现类都是悲观锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">updateStock</span><span class="params">(<span class="type">int</span> id,<span class="type">int</span> num)</span>&#123;</span><br><span class="line">  <span class="comment">//扣减库存</span></span><br><span class="line">  <span class="comment">//手动开启事务</span></span><br><span class="line">  <span class="comment">//1. 锁住id行</span></span><br><span class="line"> <span class="type">int</span> <span class="variable">stock</span> <span class="operator">=</span> mapper.find(<span class="string">&quot;select stock from product where id=#&#123;id&#125; for update&quot;</span>);<span class="comment">//排他锁</span></span><br><span class="line"> <span class="keyword">if</span>(stock&gt;=num)&#123;</span><br><span class="line">   <span class="comment">//更新stock语句...  update</span></span><br><span class="line"> &#125;</span><br><span class="line">  <span class="comment">//手动提交事务</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h2><blockquote>
+<p>无算法锁</p>
+</blockquote>
+<blockquote>
+<p>乐观锁认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据（具体方法可以使用版本号机制和CAS算法）。如果这个数据没有被更新，当前线程将自己修改的数据成功写入。如果数据已经被其他线程更新，则根据不同的实现方式执行不同的操作：重试或者报异常。</p>
+<blockquote>
+<ol>
+<li>cas机制</li>
+<li><strong>版本号机制或者时间戳</strong></li>
+<li><strong>使用限制条件</strong></li>
+</ol>
+</blockquote>
+</blockquote>
+<h3 id="版本号机制"><a href="#版本号机制" class="headerlink" title="版本号机制"></a>版本号机制</h3><blockquote>
+<p>每张表增加一列 - version,只要update库存,version自增1</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">updateStock</span><span class="params">(<span class="type">int</span> id,<span class="type">int</span> num)</span>&#123;</span><br><span class="line"> 		<span class="comment">//1. 每个线程更新之前,获取旧的version</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">oldVersion</span> <span class="operator">=</span> <span class="string">&quot;select version from product where id=#&#123;id&#125;&quot;</span>;<span class="comment">//假设oldVersion=1</span></span><br><span class="line">  </span><br><span class="line">    <span class="comment">//2. 获取库存...</span></span><br><span class="line">   <span class="type">int</span> <span class="variable">stock</span> <span class="operator">=</span> <span class="string">&quot;select stock from product where id=#&#123;id&#125;&quot;</span>;<span class="comment">//1</span></span><br><span class="line">  </span><br><span class="line">   <span class="comment">//3. 校验</span></span><br><span class="line">   <span class="keyword">if</span>(stock&gt;=num)&#123;</span><br><span class="line">     <span class="comment">//更新</span></span><br><span class="line">     <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="string">&quot;update product set stock = stock-#&#123;num&#125;,version=version+1 where id=#&#123;id&#125; and version=#&#123;oldVersion&#125;&quot;</span>;</span><br><span class="line">     <span class="keyword">if</span>(count==<span class="number">0</span>)&#123;</span><br><span class="line">       <span class="comment">//更新失败...</span></span><br><span class="line">       <span class="comment">//睡眠一会</span></span><br><span class="line">       <span class="comment">//尝试重试,再次尝试调用updateStock方法</span></span><br><span class="line">       <span class="comment">//弊端 - 导致在高并发的瞬间,只有一个事务是成功执行的.其他线程只能失败.</span></span><br><span class="line">       <span class="comment">//不断尝试 =&gt; 不断自旋 =&gt; 自旋锁</span></span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="使用限制条件-推荐"><a href="#使用限制条件-推荐" class="headerlink" title="使用限制条件 - 推荐"></a>使用限制条件 - 推荐</h3><blockquote>
+<p>降低锁的粒度 - 提高的并发</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">updateStock</span><span class="params">(<span class="type">int</span> id,<span class="type">int</span> num)</span>&#123;</span><br><span class="line"> 	</span><br><span class="line">    		<span class="comment">//2. 获取库存...</span></span><br><span class="line">    		<span class="type">int</span> <span class="variable">stock</span> <span class="operator">=</span> <span class="string">&quot;select stock from product where id=#&#123;id&#125;&quot;</span>;<span class="comment">//1</span></span><br><span class="line">  </span><br><span class="line">     	<span class="comment">//更新 - 判断库存和扣减库存 =&gt; 原子性操作</span></span><br><span class="line">    		 <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="string">&quot;update product set stock = stock-#&#123;num&#125; where id=#&#123;id&#125; and stock&gt;=#&#123;num&#125;;</span></span><br><span class="line"><span class="string">   	&#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><blockquote>
+<ol>
+<li>悲观锁 - 读少,写多</li>
+<li>乐观锁 - 读多,写少</li>
+</ol>
+</blockquote>
+<h1 id="CAS机制-面试加分点"><a href="#CAS机制-面试加分点" class="headerlink" title="CAS机制 - 面试加分点"></a>CAS机制 - 面试加分点</h1><blockquote>
+<p><code>C A S（compareAndSwap）</code>也叫比较交换，是一种无锁原子算法</p>
+<p>它包含<code>3</code>个参数<code>C A S（V，E，N）</code>，<code>V</code>表示待更新的内存值，<code>E</code>表示预期值，<code>N</code>表示新值，当 <code>V</code>值等于<code>E</code>值时，才会将<code>V</code>值更新成<code>N</code>值，如果<code>V</code>值和<code>E</code>值不等，不做更新，这就是一次<code>C A S</code>的操作.</p>
+<p><img src="/imgs/cas.png">  </p>
+</blockquote>
+<h2 id="ABA问题"><a href="#ABA问题" class="headerlink" title="ABA问题"></a>ABA问题</h2><blockquote>
+<ol>
+<li>T1线程修改V,得到一个预期值E</li>
+<li>T2线程快速执行到V&#x3D;&#x3D;E,并且N新值赋值给了V</li>
+<li>T2线程又去执行了一次流程,并且把N新值恢复成了V一开始的原始值,赋值给了V</li>
+<li>导致T1执行判断条件V&#x3D;&#x3D;E的时候,仍然为true.T1线程发生了ABA问题,不知道T2线程曾经修改过V,只不过又把V恢复成了原来的值而已.</li>
+</ol>
+</blockquote>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><blockquote>
+<p>引入版本号机制,版本号一直自增,修改过一次,就自增一次.</p>
+</blockquote>
+<h1 id="什么是分布式锁"><a href="#什么是分布式锁" class="headerlink" title="什么是分布式锁"></a>什么是分布式锁</h1><blockquote>
+<ol>
+<li><p>说到Redis，我们第一想到的功能就是可以缓存数据，除此之外，Redis因为单进程、性能高的特点，它还经常被用于做分布式锁。</p>
+</li>
+<li><p>锁我们都知道，在程序中的作用就是同步工具，保证共享资源在同一时刻只能被一个线程访问，Java中的锁我们都很熟悉了，像synchronized 、Lock都是我们经常使用的，<strong>但是Java的锁只能保证单机的时候有效</strong>，分布式集群环境就无能为力了，这个时候我们就需要用到分布式锁。</p>
+</li>
+<li><p><strong>分布式锁，顾名思义，就是分布式项目开发中用到的锁，可以用来控制分布式系统之间同步访问共享资源,与单体应用不同的是，分布式系统中竞争共享资源的最小粒度从线程升级成了进程。</strong></p>
+<p><img src="/imgs/lock2.jpeg"></p>
+</li>
+</ol>
+</blockquote>
+<h1 id="分布式锁特点"><a href="#分布式锁特点" class="headerlink" title="分布式锁特点"></a>分布式锁特点</h1><p><img src="/imgs/lock.png">  </p>
+<blockquote>
+<ol>
+<li>互斥性: 任意时刻，只有一个客户端能持有锁。</li>
+<li>锁超时释放：持有锁超时，可以释放，防止不必要的资源浪费，也可以防止死锁。</li>
+<li>可重入性:一个线程如果获取了锁之后,可以再次对其请求加锁。</li>
+<li>高性能和高可用：加锁和解锁需要开销尽可能低，同时也要保证高可用，避免分布式锁失效。</li>
+<li>安全性：锁只能被持有的客户端删除，不能被其他客户端删除</li>
+</ol>
+</blockquote>
+<h1 id="Redis实现锁的命令"><a href="#Redis实现锁的命令" class="headerlink" title="Redis实现锁的命令"></a>Redis实现锁的命令</h1><blockquote>
+<p>SETNX，用法是<code>SETNX key value</code></p>
+<p>SETNX是『 SET if Not eXists』(如果不存在，则 SET)的简写，设置成功就返回1，否则返回0。</p>
+<p>客户端 1 申请加锁，加锁成功：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>[<span class="number">1</span>]&gt; setnx lock <span class="title function_">java</span></span><br><span class="line"><span class="params">(integer)</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>客户端 2 申请加锁，因为后到达，加锁失败：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>[<span class="number">1</span>]&gt; setnx lock <span class="title function_">java</span></span><br><span class="line"><span class="params">(integer)</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>此时，加锁成功的客户端，就可以去操作「共享资源」，例如，修改 MySQL 的某一行数据，或者调用一个 API 请求。</p>
+<p>操作完成后，还要及时释放锁，给后来者让出操作共享资源的机会。<strong>如何释放锁呢？</strong></p>
+<p>也很简单，直接使用 DEL 命令删除这个 key 即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>[<span class="number">1</span>]&gt; del <span class="title function_">lock</span></span><br><span class="line"><span class="params">(integer)</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>这个逻辑非常简单，整体的路程就是这样：</p>
+<p><img src="/imgs/deadlock.jpeg">  </p>
+<h2 id="问题域"><a href="#问题域" class="headerlink" title="问题域"></a>问题域</h2><p>但是，它存在一个很大的问题，当客户端 1 拿到锁后，如果发生下面的场景，<strong>就会造成「死锁」：</strong></p>
+<ol>
+<li>程序处理业务逻辑异常，没及时释放锁</li>
+<li>进程挂了，没机会释放锁</li>
+</ol>
+<p><strong>这时，这个客户端就会一直占用这个锁，而其它客户端就「永远」拿不到这把锁了。</strong></p>
+<p>怎么解决这个问题呢？ </p>
+</blockquote>
+<h2 id="解决方案-如何避免死锁"><a href="#解决方案-如何避免死锁" class="headerlink" title="解决方案 - 如何避免死锁"></a>解决方案 - 如何避免死锁</h2><h3 id="1-方案一仍然会死锁"><a href="#1-方案一仍然会死锁" class="headerlink" title="1. 方案一仍然会死锁"></a>1. 方案一仍然会死锁</h3><blockquote>
+<p>我们很容易想到的方案是，在申请锁时，给这把锁设置一个「租期」。</p>
+<p>在 Redis 中实现时，就是给这个 key 设置一个「过期时间」。这里我们假设，操作共享资源的时间不会超过 10s，那么在加锁时，给这个 key 设置 10s 过期即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; SETNX lock <span class="number">1</span>    <span class="comment">// 加锁</span></span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; EXPIRE lock <span class="number">10</span>  <span class="comment">// 10s后自动过期</span></span><br><span class="line">(integer) <span class="number">1</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>这样一来，无论客户端是否异常，这个锁都可以在 10s 后被「自动释放」，其它客户端依旧可以拿到锁。</p>
+<p>但这样真的没问题吗？还是有问题。</p>
+<p>现在的操作，加锁、设置过期是 2 条命令，有没有可能只执行了第一条，第二条却「来不及」执行的情况发生呢？例如：</p>
+<ol>
+<li>SETNX 执行成功，执行 EXPIRE 时由于网络问题，执行失败</li>
+<li>SETNX 执行成功，Redis 异常宕机，EXPIRE 没有机会执行</li>
+<li>SETNX 执行成功，客户端异常崩溃，EXPIRE 也没有机会执行</li>
+</ol>
+<p>总之，<strong>这两条命令不能保证是原子操作（一起成功），就有潜在的风险导致过期时间设置失败，依旧发生「死锁」问题</strong>。</p>
+</blockquote>
+<h3 id="2-SETEX命令"><a href="#2-SETEX命令" class="headerlink" title="2. SETEX命令"></a>2. SETEX命令</h3><blockquote>
+<p>在 Redis 2.6.12 版本之前，我们需要想尽办法，保证 SETNX 和 EXPIRE 原子性执行，还要考虑各种异常情况如何处理。</p>
+<p>但在 Redis 2.6.12 之后，Redis 扩展了 SET 命令的参数，用这一条命令就可以了：</p>
+<ol>
+<li><p>SETEX，用法<code>SETEX key seconds value</code> </p>
+</li>
+<li><p>PSETEX ，用法<code>PSETEX key milliseconds value</code></p>
+</li>
+<li><p>不过，从Redis 2.6.12 版本开始，SET命令可以通过参数来实现和SETNX、SETEX、PSETEX 三个命令相同的效果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SET key value NX EX seconds</span><br><span class="line">加上NX、EX参数后，效果就相当于SETEX，这也是Redis获取锁写法里面最常见的。</span><br></pre></td></tr></table></figure></li>
+</ol>
+</blockquote>
+<blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一条命令保证原子性执行</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; SET lock <span class="number">1</span> EX <span class="number">10</span> NX</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<p>这样就解决了死锁问题，也比较简单。</p>
+<p>我们再来看分析下，它还有什么问题？</p>
+<p>试想这样一种场景：</p>
+<ol>
+<li>客户端 1 加锁成功，开始操作共享资源</li>
+<li>客户端 1 操作共享资源的时间，「超过」了锁的过期时间，锁被「自动释放」</li>
+<li>客户端 2 加锁成功，开始操作共享资源</li>
+<li>客户端 1 操作共享资源完成，释放锁（但释放的是客户端 2 的锁）</li>
+</ol>
+<p>看到了么，这里存在两个严重的问题：</p>
+<ol>
+<li><strong>锁过期</strong>：客户端 1 操作共享资源耗时太久，导致锁被自动释放，之后被客户端 2 持有</li>
+<li><strong>释放别人的锁</strong>：客户端 1 操作共享资源完成后，却又释放了客户端 2 的锁</li>
+</ol>
+</blockquote>
+<h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><blockquote>
+<ol>
+<li><p>依赖</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="string">&lt;dependency&gt;</span></span><br><span class="line">   <span class="string">&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span></span><br><span class="line">   <span class="string">&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;</span></span><br><span class="line"><span class="string">&lt;/dependency&gt;</span></span><br><span class="line"><span class="string">&lt;dependency&gt;</span></span><br><span class="line">  <span class="string">&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span></span><br><span class="line">  <span class="string">&lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span></span><br><span class="line"><span class="string">&lt;/dependency&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>application.yml</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8088</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="number">192.168</span><span class="number">.2</span><span class="number">.22</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">6379</span></span><br><span class="line">    <span class="attr">database:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置&#x2F;opt&#x2F;myredis&#x2F;redis.conf</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">3-1. 注释掉#bing 127.0.0.1</span><br><span class="line">            </span><br><span class="line">3-2. 将protected-mode yes修改为protected-mode no</span><br><span class="line">            </span><br><span class="line">如果这俩个设置不配置的话,将会导致远程连接虚拟机中的redis失败.</span><br></pre></td></tr></table></figure></li>
+</ol>
+</blockquote>
+<h1 id="网站性能测试工具ab"><a href="#网站性能测试工具ab" class="headerlink" title="网站性能测试工具ab"></a>网站性能测试工具ab</h1><blockquote>
+<p>ab是apache自带的压力测试工具。ab非常实用，它不仅可以对apache服务器进行网站访问压力测试，也可以对其它类型的服务器进行压力测试。比如nginx、tomcat、IIS等.</p>
+</blockquote>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><blockquote>
+<p> windows - 进入apache官网 <a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=http://httpd.apache.org/">http://httpd.apache.org/</a> 下载apache即可.终端进入bin目录即可使用ab工具</p>
+</blockquote>
+<blockquote>
+<p>linux - 安装</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[success<span class="meta">@localhost</span> ~]$ sudo yum install httpd-tools</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>ab -n 1000 -c 100 <a target="_blank" rel="noopener" href="http://192.168.2.216:8088/t2">http://192.168.2.216:8088/t2</a></p>
+<ul>
+<li>ab：ab命令；</li>
+<li>n：总请求次数；</li>
+<li>c：并发数</li>
+</ul>
+</blockquote>
+<h1 id="代码实现一-未加锁"><a href="#代码实现一-未加锁" class="headerlink" title="代码实现一 - 未加锁"></a>代码实现一 - 未加锁</h1><blockquote>
+<ol>
+<li><p>在redis中设置set num &#x3D; 0;</p>
+</li>
+<li><p>Java代码 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 未加锁</span></span><br><span class="line"><span class="comment">  * ++操作不是一个原子操作</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/t2&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">test02</span><span class="params">()</span>&#123;</span><br><span class="line">  <span class="comment">//1. 查询num值</span></span><br><span class="line">  <span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> redisTemplate.opsForValue().get(<span class="string">&quot;num&quot;</span>);</span><br><span class="line">  <span class="comment">//2. 判断num是否为空</span></span><br><span class="line">  <span class="keyword">if</span>(value==<span class="literal">null</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;error&quot;</span>;</span><br><span class="line">  <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> Integer.parseInt(value+<span class="string">&quot;&quot;</span>);</span><br><span class="line">  <span class="comment">//将num值+1</span></span><br><span class="line">  <span class="comment">//synchronized,lock =&gt; jvm级别的锁</span></span><br><span class="line">  redisTemplate.opsForValue().set(<span class="string">&quot;num&quot;</span>,++num);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ab测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ab -n <span class="number">1000</span> -c <span class="number">100</span> http:<span class="comment">//192.168.2.216:8088/t2</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试结果 - 到redis中查看get num的值,发现num最终的值是小于1000的</p>
+</li>
+</ol>
+</blockquote>
+<h1 id="代码实现二-加锁"><a href="#代码实现二-加锁" class="headerlink" title="代码实现二 - 加锁"></a>代码实现二 - 加锁</h1><blockquote>
+<ol>
+<li><p>清空库 - flushdb</p>
+</li>
+<li><p>set num &#x3D; 0</p>
+</li>
+<li><p>Java代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 提前在redis中设置set num 0</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/t1&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">test01</span><span class="params">()</span>&#123;</span><br><span class="line">  <span class="comment">//1. 获取锁 - setnx</span></span><br><span class="line">  <span class="type">Boolean</span> <span class="variable">flag</span> <span class="operator">=</span> redisTemplate.opsForValue().setIfAbsent(<span class="string">&quot;lock&quot;</span>,<span class="number">1</span>);</span><br><span class="line">  <span class="comment">//2. 判断是否获取锁</span></span><br><span class="line">  System.out.println(<span class="string">&quot;flag:&quot;</span>+flag);</span><br><span class="line">  <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">    <span class="comment">//1. 查询num值</span></span><br><span class="line">    <span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> redisTemplate.opsForValue().get(<span class="string">&quot;num&quot;</span>);</span><br><span class="line">    <span class="comment">//2. 判断num是否为空</span></span><br><span class="line">    <span class="keyword">if</span>(value==<span class="literal">null</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="string">&quot;error&quot;</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> Integer.parseInt(value+<span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="comment">//将num值+1</span></span><br><span class="line">    redisTemplate.opsForValue().set(<span class="string">&quot;num&quot;</span>,++num);</span><br><span class="line">    <span class="comment">//3. 释放锁</span></span><br><span class="line">    redisTemplate.delete(<span class="string">&quot;lock&quot;</span>);</span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">//获取锁失败、每隔0.1秒再获取</span></span><br><span class="line">      Thread.sleep(<span class="number">100</span>);</span><br><span class="line">      test01();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">      e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ab测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ab -n <span class="number">1000</span> -c <span class="number">100</span> http:<span class="comment">//192.168.2.216:8088/t1</span></span><br><span class="line"></span><br><span class="line">nginx - 负载均衡 - <span class="number">8088</span>/<span class="number">8089</span>俩个实例</span><br><span class="line">ab -n <span class="number">1000</span> -c <span class="number">100</span> http:<span class="comment">//192.168.2.216/rcks/t2</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试效果 - 发现get num;num的值正好是1000</p>
+<p><strong>基本实现。</strong></p>
+<p><strong>问题：setnx刚好获取到锁，业务逻辑出现异常，导致锁无法释放</strong></p>
+<p><strong>解决：设置过期时间，自动释放锁。</strong></p>
+</li>
+</ol>
+</blockquote>
+<h1 id="优化之设置锁的过期时间"><a href="#优化之设置锁的过期时间" class="headerlink" title="优化之设置锁的过期时间"></a>优化之设置锁的过期时间</h1><blockquote>
+<p>设置过期时间有两种方式：</p>
+<ol>
+<li><p>首先想到通过expire设置过期时间（缺乏原子性：如果在setnx和expire之间出现异常，锁也无法释放）</p>
+</li>
+<li><p>在set时指定过期时间（推荐）</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 提前在redis中设置set num 0</span></span><br><span class="line"><span class="comment">  * 设置了过期时间</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/t3&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">test03</span><span class="params">()</span>&#123;</span><br><span class="line">  <span class="comment">//1. 获取锁 - setnx</span></span><br><span class="line">  <span class="type">Boolean</span> <span class="variable">flag</span> <span class="operator">=</span> redisTemplate.opsForValue().setIfAbsent(<span class="string">&quot;lock&quot;</span>,<span class="number">1</span>,<span class="number">3</span>, TimeUnit.SECONDS);</span><br><span class="line">  <span class="comment">//2. 判断是否获取锁</span></span><br><span class="line">  System.out.println(<span class="string">&quot;flag:&quot;</span>+flag);</span><br><span class="line">  <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">    <span class="comment">//1. 查询num值</span></span><br><span class="line">    <span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> redisTemplate.opsForValue().get(<span class="string">&quot;num&quot;</span>);</span><br><span class="line">    <span class="comment">//2. 判断num是否为空</span></span><br><span class="line">    <span class="keyword">if</span>(value==<span class="literal">null</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="string">&quot;error&quot;</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> Integer.parseInt(value+<span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="comment">//将num值+1</span></span><br><span class="line">    redisTemplate.opsForValue().set(<span class="string">&quot;num&quot;</span>,++num);</span><br><span class="line">    <span class="comment">//3. 释放锁</span></span><br><span class="line">    redisTemplate.delete(<span class="string">&quot;lock&quot;</span>);</span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">//获取锁失败、每隔0.1秒再获取</span></span><br><span class="line">      Thread.sleep(<span class="number">100</span>);</span><br><span class="line">      test01();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">      e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ab -n 1000 -c 100 <a target="_blank" rel="noopener" href="http://192.168.2.216:8088/t3">http://192.168.2.216:8088/t3</a></p>
+<p>压力测试肯定也没有问题。自行测试</p>
+<p><strong>问题：可能会释放其他服务器的锁。</strong></p>
+</blockquote>
+<h2 id="为何会有可能释放其他服务器的锁"><a href="#为何会有可能释放其他服务器的锁" class="headerlink" title="为何会有可能释放其他服务器的锁"></a>为何会有可能释放其他服务器的锁</h2><blockquote>
+<p>场景如下:</p>
+<p>场景：如果业务逻辑的执行时间是7s。执行流程如下</p>
+<ol>
+<li><p>index1业务逻辑没执行完，3秒后锁被自动释放。</p>
+</li>
+<li><p>index2获取到锁，执行业务逻辑，3秒后锁被自动释放。</p>
+</li>
+<li><p>index3获取到锁，执行业务逻辑</p>
+</li>
+<li><p>index1业务逻辑执行完成，开始调用del释放锁，这时释放的是index3的锁，导致index3的业务只执行1s就被别人释放。</p>
+</li>
+</ol>
+<p>最终等于没锁的情况。</p>
+<p><strong>解决方案：setnx获取锁时，设置一个指定的唯一值（例如：uuid）；释放前获取这个值，判断是否自己的锁</strong></p>
+</blockquote>
+<h1 id="优化之UUID防误删"><a href="#优化之UUID防误删" class="headerlink" title="优化之UUID防误删"></a>优化之UUID防误删</h1><blockquote>
+<p>解决办法是：客户端在加锁时，设置一个只有自己知道的「唯一标识」进去。</p>
+<p>之后，在释放锁时，要先判断这把锁是否还归自己持有.</p>
+</blockquote>
+<h2 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 优化之UUID防误删</span></span><br><span class="line"><span class="comment">  * 提前在redis中设置set num 0</span></span><br><span class="line"><span class="comment">  * 设置了过期时间</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/t4&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">test04</span><span class="params">()</span>&#123;</span><br><span class="line">  <span class="type">String</span> <span class="variable">uuid</span> <span class="operator">=</span> UUID.randomUUID().toString();</span><br><span class="line">  <span class="comment">//1. 获取锁 - setnx</span></span><br><span class="line">  <span class="type">Boolean</span> <span class="variable">flag</span> <span class="operator">=</span> redisTemplate.opsForValue().setIfAbsent(<span class="string">&quot;lock&quot;</span>,uuid,<span class="number">3</span>, TimeUnit.SECONDS);</span><br><span class="line">  <span class="comment">//2. 判断是否获取锁</span></span><br><span class="line">  System.out.println(<span class="string">&quot;flag:&quot;</span>+flag);</span><br><span class="line">  <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">    <span class="comment">//1. 查询num值</span></span><br><span class="line">    <span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> redisTemplate.opsForValue().get(<span class="string">&quot;num&quot;</span>);</span><br><span class="line">    <span class="comment">//2. 判断num是否为空</span></span><br><span class="line">    <span class="keyword">if</span>(value==<span class="literal">null</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="string">&quot;error&quot;</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> Integer.parseInt(value+<span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="comment">//将num值+1</span></span><br><span class="line">    redisTemplate.opsForValue().set(<span class="string">&quot;num&quot;</span>,++num);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uuid.equals((String)redisTemplate.opsForValue().get(<span class="string">&quot;lock&quot;</span>))) &#123;</span><br><span class="line">      <span class="comment">//3. 释放锁</span></span><br><span class="line">      redisTemplate.delete(<span class="string">&quot;lock&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">//获取锁失败、每隔0.1秒再获取</span></span><br><span class="line">      Thread.sleep(<span class="number">100</span>);</span><br><span class="line">      test01();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">      e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>压测正常- ab -n 1000 -c 100 <a target="_blank" rel="noopener" href="http://192.168.2.216:8088/t4">http://192.168.2.216:8088/t4</a></p>
+</blockquote>
+<h2 id="问题域-缺乏原子性"><a href="#问题域-缺乏原子性" class="headerlink" title="问题域 - 缺乏原子性"></a>问题域 - 缺乏原子性</h2><blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(uuid.equals((String)redisTemplate.opsForValue().get(<span class="string">&quot;lock&quot;</span>))) &#123;</span><br><span class="line">  	<span class="comment">//3. 释放锁</span></span><br><span class="line">  	redisTemplate.delete(<span class="string">&quot;lock&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><code>释放锁使用的是 GET + DEL 两条命令，这时，又会遇到我们前面讲的原子性问题了</code></p>
+<blockquote>
+<p> 场景如下:</p>
+<ol>
+<li><p>index1业务执行删除时，查询到的lock值确实和uuid相等</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uuid.equals((String)redisTemplate.opsForValue().get(<span class="string">&quot;lock&quot;</span>)) - 判断结果正好是<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>index1业务执行删除前，lock刚好过期时间已到，被redis自动释放</p>
+<p>这也就意味着在redis中没有了lock，没有了锁。</p>
+</li>
+<li><p>index2业务获取了lock</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">uuid</span> <span class="operator">=</span> UUID.randomUUID().toString();</span><br><span class="line"><span class="comment">//1. 获取锁 - setnx</span></span><br><span class="line"><span class="type">Boolean</span> <span class="variable">flag</span> <span class="operator">=</span> redisTemplate.opsForValue().setIfAbsent(<span class="string">&quot;lock&quot;</span>,uuid,<span class="number">3</span>, TimeUnit.SECONDS);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>此时index1执行删除，此时会把index2的lock删除</p>
+<p>index1 之前在第一步已经判断返回true,已经在方法中了，所以不需要重新上锁。index1有执行的权限。index1已经比较完成了，这个时候，开始执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//3. 释放锁</span></span><br><span class="line">redisTemplate.delete(<span class="string">&quot;lock&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>删除的是业务index2的锁！</p>
+</li>
+</ol>
+</blockquote>
+<h1 id="优化之LUA脚本保证删除的原子性"><a href="#优化之LUA脚本保证删除的原子性" class="headerlink" title="优化之LUA脚本保证删除的原子性"></a>优化之LUA脚本保证删除的原子性</h1><blockquote>
+<p>上面描述的事实用伪代码表示就是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> redis.get(<span class="string">&quot;lock&quot;</span>) == $uuid:</span><br><span class="line"> 	redis.del(<span class="string">&quot;lock&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>由此可见，这两个命令还是必须要原子执行才行</p>
+<p>怎样原子执行呢？Lua 脚本。</p>
+<p>我们可以把这个逻辑，写成 Lua 脚本，让 Redis 来执行。</p>
+<p>因为 Redis 处理每一个请求是「单线程」执行的，在执行一个 Lua 脚本时，其它请求必须等待，直到这个 Lua 脚本处理完成，</p>
+<p>这样一来，GET + DEL 之间就不会插入其它命令了.</p>
+</blockquote>
+<h2 id="LUA脚本介绍"><a href="#LUA脚本介绍" class="headerlink" title="LUA脚本介绍"></a>LUA脚本介绍</h2><blockquote>
+<p>Lua 是一种轻量小巧的脚本语言，用标准 C 语言编写并以源代码形式开放， 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。</p>
+<p>Lua 提供了交互式编程模式。我们可以在命令行中输入程序并立即查看效果。</p>
+<p>Lua脚本优点：</p>
+<ul>
+<li>减少网络开销：原先多次请求的逻辑放在 redis 服务器上完成。使用脚本，减少了网络往返时延</li>
+<li>原子操作：Redis会将整个脚本作为一个整体执行，中间不会被其他命令插入（想象为事务）</li>
+<li>复用：客户端发送的脚本会永久存储在Redis中，意味着其他客户端可以复用这一脚本而不需要使用代码完成同样的逻辑</li>
+</ul>
+</blockquote>
+<h2 id="代码实现-2"><a href="#代码实现-2" class="headerlink" title="代码实现"></a>代码实现</h2><blockquote>
+<ol>
+<li><p>在src&#x2F;main&#x2F;resources目录中添加niceyoo.lua脚本,内容如下:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> redis.call(<span class="string">&#x27;get&#x27;</span>, KEYS[<span class="number">1</span>]) == ARGV[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span> redis.call(<span class="string">&#x27;del&#x27;</span>, KEYS[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>LuaController.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/lua&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LuaController</span> &#123;</span><br><span class="line">         </span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisTemplate redisTemplate;</span><br><span class="line">         </span><br><span class="line">    <span class="keyword">private</span> DefaultRedisScript&lt;Long&gt; script;</span><br><span class="line">         </span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span>&#123;</span><br><span class="line">        script = <span class="keyword">new</span> <span class="title class_">DefaultRedisScript</span>&lt;&gt;();</span><br><span class="line">        script.setResultType(Long.class);</span><br><span class="line">        script.setScriptSource(<span class="keyword">new</span> <span class="title class_">ResourceScriptSource</span>(<span class="keyword">new</span> <span class="title class_">ClassPathResource</span>(<span class="string">&quot;niceyoo.lua&quot;</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">         </span><br><span class="line">    <span class="meta">@GetMapping(&quot;/t1&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">test01</span><span class="params">(Integer id)</span>&#123;</span><br><span class="line">        <span class="comment">//锁住的是id对应的商品记录,锁住的是每个商品</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">key</span> <span class="operator">=</span> <span class="string">&quot;lock_&quot;</span>+id;</span><br><span class="line">        <span class="comment">//声明一个uuid</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">uuid</span> <span class="operator">=</span> UUID.randomUUID().toString().replace(<span class="string">&quot;-&quot;</span>,<span class="string">&quot;&quot;</span>);</span><br><span class="line">        <span class="comment">//获取锁</span></span><br><span class="line">        <span class="type">Boolean</span> <span class="variable">flag</span> <span class="operator">=</span> redisTemplate.opsForValue().setIfAbsent(key,uuid,<span class="number">10</span>, TimeUnit.SECONDS);</span><br><span class="line">        System.out.println(flag);</span><br><span class="line">        <span class="keyword">if</span>(flag)&#123;<span class="comment">//获取锁成功</span></span><br><span class="line">            <span class="comment">//执行业务逻辑</span></span><br><span class="line">            <span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> redisTemplate.opsForValue().get(<span class="string">&quot;num&quot;</span>);</span><br><span class="line">            <span class="comment">// 如果是空直接返回</span></span><br><span class="line">            <span class="keyword">if</span>(value==<span class="literal">null</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="string">&quot;error&quot;</span>;</span><br><span class="line">            <span class="comment">// 不是空 如果说在这出现了异常！ 那么delete 就删除失败！ 也就是说锁永远存在！</span></span><br><span class="line">            <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> Integer.parseInt(value + <span class="string">&quot;&quot;</span>);</span><br><span class="line">            <span class="comment">// 使num 每次+1 放入缓存</span></span><br><span class="line">            redisTemplate.opsForValue().set(<span class="string">&quot;num&quot;</span>, String.valueOf(++num));</span><br><span class="line">         </span><br><span class="line"><span class="comment">//            try &#123;</span></span><br><span class="line"><span class="comment">//                Thread.sleep(5000);</span></span><br><span class="line"><span class="comment">//            &#125; catch (InterruptedException e) &#123;</span></span><br><span class="line"><span class="comment">//                e.printStackTrace();</span></span><br><span class="line"><span class="comment">//            &#125;</span></span><br><span class="line">         </span><br><span class="line">            <span class="type">Long</span> <span class="variable">execute</span> <span class="operator">=</span> (Long) redisTemplate.execute(script, Arrays.asList(key),uuid);</span><br><span class="line">            System.out.println(<span class="string">&quot;execute执行结果，1表示执行del，0表示未执行 ===== &quot;</span> + execute);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;获取锁失败!&quot;</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//获取锁失败、每隔0.1秒再获取</span></span><br><span class="line">                Thread.sleep(<span class="number">100</span>);</span><br><span class="line">                test01(id);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</blockquote>
+<blockquote>
+<p>测试1:使用不同的浏览器来访问localhost:8088&#x2F;lua&#x2F;t1</p>
+<p>测试2:开启俩个springboot实例来进行测试</p>
+</blockquote>
+<h1 id="总结性说明"><a href="#总结性说明" class="headerlink" title="总结性说明"></a>总结性说明</h1><blockquote>
+<ol>
+<li><p>所谓的 setnx 命令来实现分布式锁，其实不是直接使用 Redis 的 setnx 命令，因为 setnx 不支持设置自动释放锁的时间（至于为什么要设置自动释放锁，是因为防止被某个进程不释放锁而造成死锁的情况），不支持设置过期时间，就得分两步命令进行操作，一步是 <code>setnx key value</code>，一步是设置过期时间，这种情况的弊端很显然，无原子性操作。</p>
+</li>
+<li><p>Redis 2.6.12 版本后，set 命令开始整合了 setex 的功能，并且 set 本身就已经包含了设置过期时间，因此常说的 setnx 命令实则只用 set 命令就可以实现了，只是参数上加上了 NX 等参数</p>
+</li>
+<li><p>经过分析，在使用 <code>set key value nx px xxx</code> 命令时，value 最好是随机字符串，这样可以防止业务代码执行时间超过设置的锁自动过期时间，而导致再次释放锁时出现释放其他进程锁的情况（套娃）</p>
+</li>
+<li><p>尽管使用随机字符串的 value，但是在释放锁时（delete方法），还是无法做到原子操作，比如进程 A 执行完业务逻辑，在准备释放锁时，恰好这时候进程 A 的锁自动过期时间到了，而另一个进程 B 获得锁成功，然后 B 还没来得及执行，进程 A 就执行了 delete(key) ，释放了进程 B 的锁…. ，因此需要配合 Lua 脚本释放锁，文章也给出了 SpringBoot 的使用示例。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="残留的问题"><a href="#残留的问题" class="headerlink" title="残留的问题"></a>残留的问题</h2><blockquote>
+<ol>
+<li><strong>经过测试，在单机 Redis 模式下，这种分布式锁，简直是无敌</strong></li>
+<li>在那些主从模式、哨兵模式、或者是 cluster 模式下，可能会出现问题，出现什么问题呢？</li>
+</ol>
+</blockquote>
+<h2 id="setNX的缺陷"><a href="#setNX的缺陷" class="headerlink" title="setNX的缺陷"></a>setNX的缺陷</h2><blockquote>
+<p>setnx 琐最大的缺点就是它加锁时只作用在一个 Redis 节点上，即使 Redis 通过 Sentinel(哨岗、哨兵) 保证高可用，如果这个 master 节点由于某些原因发生了主从切换，那么就会出现锁丢失的情况.</p>
+<p><img src="/imgs/setnx%E7%BC%BA%E9%99%B7.png"> </p>
+</blockquote>
+<h1 id="Redisson框架"><a href="#Redisson框架" class="headerlink" title="Redisson框架"></a>Redisson框架</h1><blockquote>
+<p><img src="/imgs/watchdog.jpeg"> </p>
+</blockquote>
+<blockquote>
+<p>提供了看门狗<br>Redisson提供了一个监控锁的看门狗（watch dog），它的作用是在Redisson实例被关闭前，不断(默认每10s)的延长锁(redis中的目标key)的有效期(默认续期到30s)，也就是说，<strong>如果一个拿到锁的线程一直没有完成逻辑，那么看门狗会帮助线程不断的延长锁的超时时间，锁不会因为超时而被释放</strong>。加锁的业务只要运行完成，就不会给当前锁续期，即使不手动解锁，锁默认会在30s内自动过期</p>
+</blockquote>
+<h2 id="配置步骤"><a href="#配置步骤" class="headerlink" title="配置步骤"></a>配置步骤</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">&lt;!-- springboot整合redisson --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.redisson<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>redisson-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.17.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>配置类</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">public RedissonClient redissonClient()&#123;</span><br><span class="line">  Config config = new Config();</span><br><span class="line">  config.useSingleServer().setAddress(&quot;redis://192.168.2.22:6379&quot;)</span><br><span class="line">    .setDatabase(1);</span><br><span class="line"></span><br><span class="line">  return Redisson.create(config);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>代码实现</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RedissonController</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> Redisson redisson;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/deduct&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">lockKey</span> <span class="operator">=</span> <span class="string">&quot;STOCK_LOCK&quot;</span>;</span><br><span class="line">        <span class="comment">//获取锁</span></span><br><span class="line">        <span class="type">RLock</span> <span class="variable">lock</span> <span class="operator">=</span> redisson.getLock(lockKey);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//加锁 - 实现续命锁功能</span></span><br><span class="line">            lock.lock();</span><br><span class="line">            System.out.println(<span class="string">&quot;加锁...&quot;</span>);</span><br><span class="line">            <span class="comment">//获取库存数量</span></span><br><span class="line">            <span class="type">Integer</span> <span class="variable">stock</span> <span class="operator">=</span> (Integer) redisTemplate.opsForValue().get(<span class="string">&quot;stock&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span>(stock&gt;<span class="number">0</span>)&#123;</span><br><span class="line">                <span class="type">Integer</span> <span class="variable">realStock</span> <span class="operator">=</span> stock-<span class="number">1</span>;</span><br><span class="line">                redisTemplate.opsForValue().set(<span class="string">&quot;stock&quot;</span>,realStock);</span><br><span class="line">                System.out.println(<span class="string">&quot;扣减成功，剩余库存:&quot;</span> + realStock + <span class="string">&quot;&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;  <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">//释放锁</span></span><br><span class="line">            lock.unlock();</span><br><span class="line">            System.out.println(<span class="string">&quot;释放锁...&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title="0" data-url="http://link.hhtjim.com/163/22821023.mp3"></li>
+                        
+                    
+                        
+                            <li title="1" data-url="http://link.hhtjim.com/163/441116287.mp3"></li>
+                        
+                    
+                        
+                            <li title="2" data-url="http://link.hhtjim.com/163/509726618.mp3"></li>
+                        
+                    
+                        
+                            <li title="3" data-url="http://link.hhtjim.com/163/465262028.mp3"></li>
+                        
+                    
+                        
+                            <li title="4" data-url="http://link.hhtjim.com/163/1357220737.mp3"></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+        
+    <div id="gitalk-container" class="comment link"
+		data-enable="false"
+        data-ae="false"
+        data-ci=""
+        data-cs=""
+        data-r=""
+        data-o=""
+        data-a=""
+        data-d="false"
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#nginx"><span class="toc-number">1.</span> <span class="toc-text">nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">负载均衡的配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%9A%84%E7%AD%96%E7%95%A5"><span class="toc-number">1.2.</span> <span class="toc-text">负载均衡的策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#synchronized%E6%88%96%E8%80%85lock%E5%B1%9E%E4%BA%8Ejvm%E8%BF%9B%E7%A8%8B%E7%BA%A7%E5%88%AB%E7%9A%84%E9%94%81"><span class="toc-number">1.3.</span> <span class="toc-text">synchronized或者lock属于jvm进程级别的锁</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81"><span class="toc-number">2.</span> <span class="toc-text">悲观锁和乐观锁</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%82%B2%E8%A7%82%E9%94%81"><span class="toc-number">2.1.</span> <span class="toc-text">悲观锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%90%E8%A7%82%E9%94%81"><span class="toc-number">2.2.</span> <span class="toc-text">乐观锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E5%8F%B7%E6%9C%BA%E5%88%B6"><span class="toc-number">2.2.1.</span> <span class="toc-text">版本号机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6%E6%9D%A1%E4%BB%B6-%E6%8E%A8%E8%8D%90"><span class="toc-number">2.2.2.</span> <span class="toc-text">使用限制条件 - 推荐</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">2.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CAS%E6%9C%BA%E5%88%B6-%E9%9D%A2%E8%AF%95%E5%8A%A0%E5%88%86%E7%82%B9"><span class="toc-number">3.</span> <span class="toc-text">CAS机制 - 面试加分点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ABA%E9%97%AE%E9%A2%98"><span class="toc-number">3.1.</span> <span class="toc-text">ABA问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">3.1.1.</span> <span class="toc-text">解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-number">4.</span> <span class="toc-text">什么是分布式锁</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%89%B9%E7%82%B9"><span class="toc-number">5.</span> <span class="toc-text">分布式锁特点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E5%AE%9E%E7%8E%B0%E9%94%81%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="toc-number">6.</span> <span class="toc-text">Redis实现锁的命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%9F%9F"><span class="toc-number">6.1.</span> <span class="toc-text">问题域</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E6%AD%BB%E9%94%81"><span class="toc-number">6.2.</span> <span class="toc-text">解决方案 - 如何避免死锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%96%B9%E6%A1%88%E4%B8%80%E4%BB%8D%E7%84%B6%E4%BC%9A%E6%AD%BB%E9%94%81"><span class="toc-number">6.2.1.</span> <span class="toc-text">1. 方案一仍然会死锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-SETEX%E5%91%BD%E4%BB%A4"><span class="toc-number">6.2.2.</span> <span class="toc-text">2. SETEX命令</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">7.</span> <span class="toc-text">环境准备</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%AB%99%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7ab"><span class="toc-number">8.</span> <span class="toc-text">网站性能测试工具ab</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">8.1.</span> <span class="toc-text">安装</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%80-%E6%9C%AA%E5%8A%A0%E9%94%81"><span class="toc-number">9.</span> <span class="toc-text">代码实现一 - 未加锁</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%BA%8C-%E5%8A%A0%E9%94%81"><span class="toc-number">10.</span> <span class="toc-text">代码实现二 - 加锁</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E4%B9%8B%E8%AE%BE%E7%BD%AE%E9%94%81%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="toc-number">11.</span> <span class="toc-text">优化之设置锁的过期时间</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">11.1.</span> <span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E4%BC%9A%E6%9C%89%E5%8F%AF%E8%83%BD%E9%87%8A%E6%94%BE%E5%85%B6%E4%BB%96%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%94%81"><span class="toc-number">11.2.</span> <span class="toc-text">为何会有可能释放其他服务器的锁</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E4%B9%8BUUID%E9%98%B2%E8%AF%AF%E5%88%A0"><span class="toc-number">12.</span> <span class="toc-text">优化之UUID防误删</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">12.1.</span> <span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%9F%9F-%E7%BC%BA%E4%B9%8F%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-number">12.2.</span> <span class="toc-text">问题域 - 缺乏原子性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E4%B9%8BLUA%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%88%A0%E9%99%A4%E7%9A%84%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-number">13.</span> <span class="toc-text">优化之LUA脚本保证删除的原子性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#LUA%E8%84%9A%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="toc-number">13.1.</span> <span class="toc-text">LUA脚本介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-2"><span class="toc-number">13.2.</span> <span class="toc-text">代码实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E6%80%A7%E8%AF%B4%E6%98%8E"><span class="toc-number">14.</span> <span class="toc-text">总结性说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AE%8B%E7%95%99%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">14.1.</span> <span class="toc-text">残留的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#setNX%E7%9A%84%E7%BC%BA%E9%99%B7"><span class="toc-number">14.2.</span> <span class="toc-text">setNX的缺陷</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redisson%E6%A1%86%E6%9E%B6"><span class="toc-number">15.</span> <span class="toc-text">Redisson框架</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4"><span class="toc-number">15.1.</span> <span class="toc-text">配置步骤</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

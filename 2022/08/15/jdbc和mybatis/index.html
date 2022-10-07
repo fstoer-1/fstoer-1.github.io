@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JDBV和Mybatis - 勉~杌子生的博客</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="1. JDBC部分1. Statement 和PreparedStatement，CallableStatement的区别？⭐️
+
+PreparedStatement是预编译的SQL语句，效率高于S,"> 
+    <meta name="author" content="Fstoer BG"> 
+    <link rel="alternative" href="atom.xml" title="勉~杌子生的博客" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+    
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="JDBV和Mybatis - 勉~杌子生的博客"/>
+    <meta name="twitter:description" content="1. JDBC部分1. Statement 和PreparedStatement，CallableStatement的区别？⭐️
+
+PreparedStatement是预编译的SQL语句，效率高于S,"/>
+    
+    
+    
+    
+    <meta property="og:site_name" content="勉~杌子生的博客"/>
+    <meta property="og:type" content="object"/>
+    <meta property="og:title" content="JDBV和Mybatis - 勉~杌子生的博客"/>
+    <meta property="og:description" content="1. JDBC部分1. Statement 和PreparedStatement，CallableStatement的区别？⭐️
+
+PreparedStatement是预编译的SQL语句，效率高于S,"/>
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script>window.searchDbPath = "/search.xml";</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">勉~杌子生的博客</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://fstoer-1.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">JDBV和Mybatis</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">JDBV和Mybatis</h1>
+        <div class="stuff">
+            <span>八月 15, 2022</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/MyBatis/" rel="tag">MyBatis</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="1-JDBC部分"><a href="#1-JDBC部分" class="headerlink" title="1. JDBC部分"></a>1. JDBC部分</h1><h2 id="1-Statement-和PreparedStatement，CallableStatement的区别？⭐️"><a href="#1-Statement-和PreparedStatement，CallableStatement的区别？⭐️" class="headerlink" title="1. Statement 和PreparedStatement，CallableStatement的区别？⭐️"></a>1. Statement 和PreparedStatement，CallableStatement的区别？⭐️</h2><blockquote>
+<ul>
+<li><strong>PreparedStatement是预编译的SQL语句</strong>，效率高于Statement。</li>
+<li>PreparedStatement支持?操作符，相对于Statement更加灵活。</li>
+<li><strong>PreparedStatement可以防止SQL注入</strong>，安全性高于Statement。</li>
+<li>CallableStatement适用于执行存储过程。</li>
+</ul>
+</blockquote>
+<h2 id="2-JDBC操作数据库的步骤-？"><a href="#2-JDBC操作数据库的步骤-？" class="headerlink" title="2. JDBC操作数据库的步骤 ？"></a>2. JDBC操作数据库的步骤 ？</h2><blockquote>
+<ol>
+<li>注册数据库驱动。</li>
+<li>建立数据库连接。</li>
+<li>创建一个Statement。</li>
+<li>执行SQL语句。</li>
+<li>处理结果集。</li>
+<li>关闭数据库连接</li>
+</ol>
+</blockquote>
+<h2 id="3-说说数据库连接池工作原理和实现方案？-⭐️"><a href="#3-说说数据库连接池工作原理和实现方案？-⭐️" class="headerlink" title="3. 说说数据库连接池工作原理和实现方案？ ⭐️"></a>3. 说说数据库连接池工作原理和实现方案？ ⭐️</h2><blockquote>
+<ol>
+<li><p>工作原理</p>
+<p>当客户请求数据库连接时，首先查看连接池中是否有空闲连接，如果存在空闲连接，则将连接分配给客户使用；如果没有空闲连接，则查看当前所开的连接数是否已经达到最大连接数，如果没达到就重新创建一个连接给请求的客户；如果达到就按设定的最大等待时间进行等待，如果超出最大等待时间，则抛出异常给客户.</p>
+<p><img src="/imgs/pool.jpeg"> </p>
+<p>Ø 实现方案：连接池使用集合来进行装载，返回的Connection是原始Connection的代理，代理Connection的close方法，当调用close方法时，不是真正关连接，而是把它代理的Connection对象放回到连接池中，等待下一次重复利用。</p>
+</li>
+<li><p><strong>连接池参数 - 稍微记忆几个</strong></p>
+<ol>
+<li><p><strong>maxActive  连接池支持的最大连接数</strong>，这里取值为20，表示同时最多有20个数据库连接。一般把maxActive设置成可能的并发量就行了设 0 为没有限制。</p>
+</li>
+<li><p>maxIdle 连接池中最多可空闲maxIdle个连接 ，这里取值为20，表示即使没有数据库连接时依然可以保持20空闲的连接，而不被清除，随时处于待命状态。设 0 为没有限制。</p>
+</li>
+<li><p>minIdle 连接池中最小空闲连接数，当连接数少于此值时，连接池会创建连接来补充到该值的数量</p>
+</li>
+<li><p>initialSize 初始化连接数目 </p>
+</li>
+<li><p><strong>maxWait 连接池中连接用完时,新的请求等待时间</strong>,毫秒，这里取值-1，表示无限等待，直到超时为止，也可取值9000，表示9秒后超时。超过时间会出错误信息</p>
+</li>
+<li><p>removeAbandoned  是否清除已经超过“removeAbandonedTimout”设置的无效连接。如果值为“true”则超过“removeAbandonedTimout”设置的无效连接将会被清除。设置此属性可以从那些没有合适关闭连接的程序中恢复数据库的连接。</p>
+</li>
+<li><p>removeAbandonedTimeout 活动连接的最大空闲时间,单位为秒 超过此时间的连接会被释放到连接池中,针对未被close的活动连接</p>
+</li>
+<li><p>minEvictableIdleTimeMillis 连接池中连接可空闲的时间,单位为毫秒 针对连接池中的连接对象</p>
+</li>
+<li><p>timeBetweenEvictionRunsMillis &#x2F; minEvictableIdleTimeMillis  每timeBetweenEvictionRunsMillis毫秒秒检查一次连接池中空闲的连接,把空闲时间超过minEvictableIdleTimeMillis毫秒的连接断开,直到连接池中的连接数到minIdle为止.</p>
+</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<h2 id="4-SQL注入"><a href="#4-SQL注入" class="headerlink" title="4. SQL注入"></a>4. SQL注入</h2><blockquote>
+<p>queryList(String name){</p>
+<p>​	st.executeQuery(“select * from user where username&#x3D;’”+name+”‘“);</p>
+<p>}</p>
+<p>queryList(“java’ or ‘1’&#x3D;’1”);</p>
+<p>select * from user where username&#x3D;’java’ or ‘1’&#x3D;’1’;&#x2F;&#x2F;将一些非法的sql硬拼接到原来的sql中</p>
+</blockquote>
+<blockquote>
+<p>SQL 注入就是在用户输入的字符串中加入 SQL 语句，如果在设计不良的程序中忽略了检查，那么这些注入进去的 SQL 语句就会被数据库服务器误认为是正常的 SQL 语句而运行，攻击者就可以执行计划外的命令或访问未被授权的数据</p>
+<p>下面是在开发过程中可以避免 SQL 注入的一些方法。</p>
+<ol>
+<li>避免使用动态SQL<br>避免将用户的输入数据直接放入 SQL 语句中，最好使用准备好的语句和参数化查询，这样更安全。</li>
+<li>不要将敏感数据保留在纯文本中<br>加密存储在数据库中的私有&#x2F;机密数据，这样可以提供了另一级保护，以防攻击者成功地排出敏感数据。</li>
+<li>限制数据库权限和特权<br>将数据库用户的功能设置为最低要求；这将限制攻击者在设法获取访问权限时可以执行的操作。</li>
+<li>避免直接向用户显示数据库错误<br>攻击者可以使用这些错误消息来获取有关数据库的信息。</li>
+</ol>
+</blockquote>
+<h1 id="2-Mybatis部分"><a href="#2-Mybatis部分" class="headerlink" title="2. Mybatis部分"></a>2. Mybatis部分</h1><h2 id="1-和-区别-⭐️"><a href="#1-和-区别-⭐️" class="headerlink" title="1. $和#区别 ⭐️"></a>1. $和#区别 ⭐️</h2><blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 使用$&#123;&#125;方式传入的参数，mybatis不会对它进行特殊处理，而使用#&#123;&#125;传进来的参数，mybatis默认会将其当成字符串。可能在赋值给如id=#&#123;id&#125;和id=$&#123;id&#125;看不出多大区别.</span><br><span class="line"><span class="number">2.</span> 对于传入分组(order)字段或者排序字段(order)，应使用$&#123;&#125;,避免出现order  by <span class="string">&quot;id&quot;</span> 等情况.</span><br><span class="line">   order by $&#123;id&#125;  -&gt; order by <span class="number">10</span></span><br><span class="line">   order by #&#123;id&#125;  -&gt; order by <span class="string">&quot;10&quot;</span></span><br><span class="line"><span class="number">3.</span> #和$在预编译处理中是不一样的。#类似jdbc中的PreparedStatement，对于传入的参数，在预处理阶段会使用?代替.</span><br><span class="line">  待真正查询的时候即在数据库管理系统中（DBMS）才会代入参数。而$&#123;&#125;则是简单的替换.</span><br><span class="line"><span class="number">4.</span> 能使用#&#123;&#125;的地方应尽量使用#&#123;&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="2-resultType和resultMap区别"><a href="#2-resultType和resultMap区别" class="headerlink" title="2. resultType和resultMap区别"></a>2. resultType和resultMap区别</h2><blockquote>
+<ol>
+<li><p>resultMap：表示将查询结果集中的列一一映射到bean对象的各个属性。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;userResultMap&quot;</span> <span class="attr">type</span>=<span class="string">&quot;com.xxx.User&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;user_id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;userId&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;user_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;userName&quot;</span>/&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">   </span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectedUser&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;userResultMap&quot;</span>&gt;</span></span><br><span class="line">        SELECT * FROM users WHERE user_id = #&#123;user_id&#125; AND user_name = #&#123;user_name&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>resultType:表示的是bean中的对象类，此时可以省略掉resultMap标签的映射<strong>，但是必须保证查询结果集中的属性 和 bean对象类中的属性是一一对应的。</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectedUser&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.xxx.User&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;String&quot;</span>&gt;</span></span><br><span class="line">        SELECT user_Id AS userId, user_Name AS userName FROM users WHERE user_id = #&#123;user_id&#125; AND user_name = #&#123;user_name&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+</blockquote>
+<blockquote>
+<p>mapper接口传参方式</p>
+<ul>
+<li>简单类型 - 基本类型,包装类型.String &#x3D;&gt; #{value}</li>
+<li>自定义对象类型 &#x3D;&gt; #{对象属性名}占位符</li>
+<li>@Param(“参数名”)&#x3D;&gt;#{参数名}  &#x3D;&gt; 散列的多个参数 - “摆地摊”</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>mybatis,spring,springboot文件中配置了哪些东西.</p>
+</blockquote>
+<h2 id="3-Mybatis优点"><a href="#3-Mybatis优点" class="headerlink" title="3. Mybatis优点"></a>3. Mybatis优点</h2><blockquote>
+<p>Mybatis和JPA的对比!</p>
+<ol>
+<li>效率肯定是Mybatis</li>
+<li>移植性-JPA-跨数据库平台</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol>
+<li>基于 SQL 语句编程，相当灵活，不会对应用程序或者数据库的现有设计造成任 何影响，SQL 写在 XML 里，解除 sql 与程序代码的耦合，便于统一管理；提供 XML 标签，支持编写动态 SQL 语句，并可重用。</li>
+<li>与 JDBC 相比，减少了 50%以上的代码量，消除了 JDBC 大量冗余的代码，不 需要手动开关连接；</li>
+<li>很好的与各种数据库兼容（因为 MyBatis 使用 JDBC 来连接数据库，所以只要 JDBC 支持的数据库 MyBatis 都支持）。</li>
+<li>能够与 Spring 很好的集成；</li>
+<li>提供映射标签，支持对象与数据库的 ORM 字段关系映射；提供对象关系映射 标签，支持对象关系组件维护。</li>
+<li>MyBatis 专注于 SQL 本身，是一个足够灵活的 DAO 层解决方案。</li>
+<li>对性能的要求很高，或者需求变化较多的项目，如互联网项目，MyBatis 将是 不错的选择</li>
+</ol>
+</blockquote>
+<h2 id="4-Mapper-接口的工作原理是什么？Mapper-接口里的方法，参数不同时，方法能重载吗？"><a href="#4-Mapper-接口的工作原理是什么？Mapper-接口里的方法，参数不同时，方法能重载吗？" class="headerlink" title="4. Mapper 接口的工作原理是什么？Mapper 接口里的方法，参数不同时，方法能重载吗？"></a>4. Mapper 接口的工作原理是什么？Mapper 接口里的方法，参数不同时，方法能重载吗？</h2><blockquote>
+<p>Dao 接口即 Mapper 接口。接口的全限名，就是映射文件中的 namespace 的值；接口的方法名，就是映射文件中 Mapper 的 Statement 的 id 值；接口方法内的参数，就是传递给 sql 的参数。</p>
+<p>Mapper 接口是没有实现类的，当调用接口方法时，接口全限名+方法名拼接字符串作为 key 值，可唯一定位一个 MapperStatement。在 Mybatis 中，每一个 <code>&lt;select&gt;、&lt;insert&gt;、&lt;update&gt;、&lt;delete&gt;</code>标签，都会被解析为一个MapperStatement 对象。</p>
+<p>举例：com.mybatis3.mappers.StudentDao.findStudentById，可以唯一找到 namespace 为com.mybatis3.mappers.StudentDao 下面 id 为findStudentById 的 MapperStatement。</p>
+<p>Mapper 接口里的方法，是不能重载的，因为是使用 全限名+方法名 的保存和寻找策略。Mapper 接口的工作原理是 JDK 动态代理，Mybatis 运行时会使用 JDK动态代理为 Mapper 接口生成代理对象 proxy，代理对象会拦截接口方法，转而执行 MapperStatement 所代表的 sql，然后将 sql 执行结果返回。</p>
+</blockquote>
+<h2 id="5-Mybatis-是如何进行分页的？分页插件的原理是什么？⭐️"><a href="#5-Mybatis-是如何进行分页的？分页插件的原理是什么？⭐️" class="headerlink" title="5.  Mybatis 是如何进行分页的？分页插件的原理是什么？⭐️"></a>5.  Mybatis 是如何进行分页的？分页插件的原理是什么？⭐️</h2><blockquote>
+<p>limit (pageNum-1)*pageSize,pageSize</p>
+</blockquote>
+<blockquote>
+<p>Mybatis 使用 RowBounds 对象进行分页，它是针对 ResultSet 结果集执行的内存分页，而非物理分页。可以在 sql 内直接书写带有物理分页的参数来完成物理分页功能，也可以使用分页插件来完成物理分页。</p>
+<p>分页插件的基本原理是使用 Mybatis 提供的插件接口，实现自定义插件，<strong>在插件的拦截方法内拦截待执行的 sql，然后重写 sql，根据 dialect 方言，添加对应的物理分页语句和物理分页参数。</strong></p>
+</blockquote>
+<h2 id="6-Mybatis-动态-sql-有什么用？执行原理？有哪些动态-sql？"><a href="#6-Mybatis-动态-sql-有什么用？执行原理？有哪些动态-sql？" class="headerlink" title="6. Mybatis 动态 sql 有什么用？执行原理？有哪些动态 sql？"></a>6. Mybatis 动态 sql 有什么用？执行原理？有哪些动态 sql？</h2><blockquote>
+<p>Mybatis 动态 sql 可以在 Xml 映射文件内，以标签的形式编写动态 sql，执行原理 是根据表达式的值 完成逻辑判断并动态拼接 sql 的功能。</p>
+<p>Mybatis 提供了 9 种动态 sql 标签：trim | <strong>where | set</strong> | foreach | if | choose | when | otherwise | bind。</p>
+<p>其他动态sql标签:<code>&lt;resultMap&gt;、&lt;parameterMap&gt;、&lt;sql&gt;、&lt;include&gt;、&lt;selectKey&gt;</code></p>
+</blockquote>
+<h2 id="7-Mybatis的一级-x2F-二级缓存机制"><a href="#7-Mybatis的一级-x2F-二级缓存机制" class="headerlink" title="7. Mybatis的一级&#x2F;二级缓存机制"></a>7. Mybatis的一级&#x2F;二级缓存机制</h2><blockquote>
+<ol>
+<li><p>一级缓存: 基于 PerpetualCache 的 HashMap 本地缓存，其存储<strong>作用域为 Session</strong>，当 Session flush 或 close 之后，该 Session 中的所有 Cache 就 将清空，<strong>默认打开一级缓存</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Session</span> <span class="variable">session</span> <span class="operator">=</span> MybatisUtil.getSession();</span><br><span class="line"><span class="type">UserMapper</span> <span class="variable">userMapper</span> <span class="operator">=</span> session.getMapper(UserMapper.class);</span><br><span class="line"><span class="type">User</span> <span class="variable">user1</span> <span class="operator">=</span> userMapper.getById(<span class="number">10</span>);<span class="comment">// 1. 控制台 - 打印sql语句;2. id=10这个对象放入到缓存中.</span></span><br><span class="line">																	<span class="comment">//存储格式   key-id值,value-对象</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// flush 或 close</span></span><br><span class="line"></span><br><span class="line"><span class="type">User</span> <span class="variable">user2</span> <span class="operator">=</span> userMapper.getById(<span class="number">10</span>);<span class="comment">//2. 控制台 - 不会出现sql,没有和db进行交互.直接从缓存中获取的</span></span><br><span class="line"></span><br><span class="line">user1 == user2;<span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>二级缓存与一级缓存其机制相同，默认也是采用 PerpetualCache，HashMap存储，不同在于其存储<strong>作用域为 Mapper</strong>(Namespace)，并且可自定义存储源，如 Ehcache。<strong>默认不打开二级缓存，要开启二级缓存</strong>，使用二级缓存属性类需要实现 Serializable 序列化接口(可用来保存对象的状态),可在它的映射文件中配置；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开启二级缓存</span></span><br><span class="line"><span class="type">Session</span> <span class="variable">session</span> <span class="operator">=</span> MybatisUtil.getSession();</span><br><span class="line"><span class="type">UserMapper</span> <span class="variable">userMapper</span> <span class="operator">=</span> session.getMapper(UserMapper.class);</span><br><span class="line"><span class="type">User</span> <span class="variable">user1</span> <span class="operator">=</span> userMapper.getById(<span class="number">10</span>);<span class="comment">// 在一级和二级缓存中都会存储</span></span><br><span class="line">session.flush();<span class="comment">//清空缓存</span></span><br><span class="line"><span class="type">User</span> <span class="variable">user2</span> <span class="operator">=</span> userMapper.getById(<span class="number">10</span>);<span class="comment">//不会打印sql语句,一级缓存中如果不存在,从二级缓存中去取</span></span><br><span class="line"></span><br><span class="line">user1 == user2 ;<span class="comment">// 二级缓存中比较-&gt;false,存储key-&gt;id,value-&gt;各个属性散列的值</span></span><br><span class="line"><span class="comment">// 从缓存中根据id找到散列的属性值,然后它会重新新建一个对象来封装这些散列的值.</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>对于缓存数据更新机制，当某一个作用域(一级缓存 Session&#x2F;二级缓存Namespaces)的进行了 C&#x2F;U&#x2F;D 操作后，默认该作用域下所有 select 中的缓存将被 clear。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="8-延迟加载"><a href="#8-延迟加载" class="headerlink" title="8. 延迟加载"></a>8. 延迟加载</h2><blockquote>
+<p>resultMap可以实现高级映射（使用association、collection实现一对一及一对多映射），association、collection具备延迟加载功能。<br>延迟加载的好处：<br>先从单表查询、需要时再从关联表去关联查询，大大提高数据库性能，因为查询单表要比关联查询多张表速度要快。<br>延迟加载的实例：<br>如果查询订单并且关联查询用户信息。如果先查询订单信息即可满足要求，当我们需要查询用户信息时再查询用户信息。把对用户信息的按需去查询就是延迟加载。</p>
+</blockquote>
+<h2 id="9-collection和association的区别-⭐️"><a href="#9-collection和association的区别-⭐️" class="headerlink" title="9. collection和association的区别 ⭐️"></a>9. collection和association的区别 ⭐️</h2><blockquote>
+<p>MyBatis提供了下面两个标签来处理一对一、多对一、一对多的映射关系：<br><strong>association:</strong> 处理一对一、多对一<br><strong>collection:</strong> 处理一对多</p>
+</blockquote>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title="0" data-url="http://link.hhtjim.com/163/22821023.mp3"></li>
+                        
+                    
+                        
+                            <li title="1" data-url="http://link.hhtjim.com/163/441116287.mp3"></li>
+                        
+                    
+                        
+                            <li title="2" data-url="http://link.hhtjim.com/163/509726618.mp3"></li>
+                        
+                    
+                        
+                            <li title="3" data-url="http://link.hhtjim.com/163/465262028.mp3"></li>
+                        
+                    
+                        
+                            <li title="4" data-url="http://link.hhtjim.com/163/1357220737.mp3"></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+        
+    <div id="gitalk-container" class="comment link"
+		data-enable="false"
+        data-ae="false"
+        data-ci=""
+        data-cs=""
+        data-r=""
+        data-o=""
+        data-a=""
+        data-d="false"
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-JDBC%E9%83%A8%E5%88%86"><span class="toc-number">1.</span> <span class="toc-text">1. JDBC部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Statement-%E5%92%8CPreparedStatement%EF%BC%8CCallableStatement%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F%E2%AD%90%EF%B8%8F"><span class="toc-number">1.1.</span> <span class="toc-text">1. Statement 和PreparedStatement，CallableStatement的区别？⭐️</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-JDBC%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%AD%A5%E9%AA%A4-%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">2. JDBC操作数据库的步骤 ？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%AF%B4%E8%AF%B4%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88%EF%BC%9F-%E2%AD%90%EF%B8%8F"><span class="toc-number">1.3.</span> <span class="toc-text">3. 说说数据库连接池工作原理和实现方案？ ⭐️</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-SQL%E6%B3%A8%E5%85%A5"><span class="toc-number">1.4.</span> <span class="toc-text">4. SQL注入</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Mybatis%E9%83%A8%E5%88%86"><span class="toc-number">2.</span> <span class="toc-text">2. Mybatis部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%92%8C-%E5%8C%BA%E5%88%AB-%E2%AD%90%EF%B8%8F"><span class="toc-number">2.1.</span> <span class="toc-text">1. $和#区别 ⭐️</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-resultType%E5%92%8CresultMap%E5%8C%BA%E5%88%AB"><span class="toc-number">2.2.</span> <span class="toc-text">2. resultType和resultMap区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Mybatis%E4%BC%98%E7%82%B9"><span class="toc-number">2.3.</span> <span class="toc-text">3. Mybatis优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Mapper-%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9FMapper-%E6%8E%A5%E5%8F%A3%E9%87%8C%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%8C%E5%8F%82%E6%95%B0%E4%B8%8D%E5%90%8C%E6%97%B6%EF%BC%8C%E6%96%B9%E6%B3%95%E8%83%BD%E9%87%8D%E8%BD%BD%E5%90%97%EF%BC%9F"><span class="toc-number">2.4.</span> <span class="toc-text">4. Mapper 接口的工作原理是什么？Mapper 接口里的方法，参数不同时，方法能重载吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Mybatis-%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E5%88%86%E9%A1%B5%E7%9A%84%EF%BC%9F%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6%E7%9A%84%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E2%AD%90%EF%B8%8F"><span class="toc-number">2.5.</span> <span class="toc-text">5.  Mybatis 是如何进行分页的？分页插件的原理是什么？⭐️</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Mybatis-%E5%8A%A8%E6%80%81-sql-%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%EF%BC%9F%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86%EF%BC%9F%E6%9C%89%E5%93%AA%E4%BA%9B%E5%8A%A8%E6%80%81-sql%EF%BC%9F"><span class="toc-number">2.6.</span> <span class="toc-text">6. Mybatis 动态 sql 有什么用？执行原理？有哪些动态 sql？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-Mybatis%E7%9A%84%E4%B8%80%E7%BA%A7-x2F-%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6"><span class="toc-number">2.7.</span> <span class="toc-text">7. Mybatis的一级&#x2F;二级缓存机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD"><span class="toc-number">2.8.</span> <span class="toc-text">8. 延迟加载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-collection%E5%92%8Cassociation%E7%9A%84%E5%8C%BA%E5%88%AB-%E2%AD%90%EF%B8%8F"><span class="toc-number">2.9.</span> <span class="toc-text">9. collection和association的区别 ⭐️</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

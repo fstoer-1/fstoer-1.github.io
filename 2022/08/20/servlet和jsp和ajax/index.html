@@ -1,0 +1,562 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Servlet和Jsp - 勉~杌子生的博客</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="1. Servlet部分1. get请求和post请求区别
+
+get将表单中数据按照name&amp;#x3D;value的形式，添加到action 所指向的URL后面,post是将表单中的数据放在HTTP,"> 
+    <meta name="author" content="Fstoer BG"> 
+    <link rel="alternative" href="atom.xml" title="勉~杌子生的博客" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+    
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="Servlet和Jsp - 勉~杌子生的博客"/>
+    <meta name="twitter:description" content="1. Servlet部分1. get请求和post请求区别
+
+get将表单中数据按照name&amp;#x3D;value的形式，添加到action 所指向的URL后面,post是将表单中的数据放在HTTP,"/>
+    
+    
+    
+    
+    <meta property="og:site_name" content="勉~杌子生的博客"/>
+    <meta property="og:type" content="object"/>
+    <meta property="og:title" content="Servlet和Jsp - 勉~杌子生的博客"/>
+    <meta property="og:description" content="1. Servlet部分1. get请求和post请求区别
+
+get将表单中数据按照name&amp;#x3D;value的形式，添加到action 所指向的URL后面,post是将表单中的数据放在HTTP,"/>
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script>window.searchDbPath = "/search.xml";</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">勉~杌子生的博客</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://fstoer-1.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Servlet和Jsp</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Servlet和Jsp</h1>
+        <div class="stuff">
+            <span>八月 20, 2022</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Jsp/" rel="tag">Jsp</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Servlet/" rel="tag">Servlet</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/ajax/" rel="tag">ajax</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="1-Servlet部分"><a href="#1-Servlet部分" class="headerlink" title="1. Servlet部分"></a>1. Servlet部分</h1><h2 id="1-get请求和post请求区别"><a href="#1-get请求和post请求区别" class="headerlink" title="1. get请求和post请求区别"></a>1. get请求和post请求区别</h2><blockquote>
+<ul>
+<li>get将表单中数据按照name&#x3D;value的形式，添加到action 所指向的URL后面,post是将表单中的数据放在HTTP协议的请求头或消息体中，传递到action所指向URL；</li>
+<li>get传输的数据要受到URL长度限制（1024字节）；而post可以传输大量的数据，上传文件通常要使用post方式；</li>
+<li>使用get时参数会显示在地址栏上，如果这些数据不是敏感数据，那么可以使用get；对于敏感数据还是应用使用post；</li>
+<li>get请求用来从服务器上获得资源，而post是用来向服务器提交数据；</li>
+</ul>
+</blockquote>
+<h2 id="2-Servlet生命周期"><a href="#2-Servlet生命周期" class="headerlink" title="2. Servlet生命周期"></a>2. Servlet生命周期</h2><blockquote>
+<p>Servlet 加载—&gt;实例化—&gt;服务—&gt;销毁。</p>
+<p><strong>init（）：</strong></p>
+<p>在Servlet的生命周期中，仅执行一次init()方法。它是在服务器装入Servlet时执行的，负责初始化Servlet对象。可以配置服务器，以在启动服务器或客户机首次访问Servlet时装入Servlet。无论有多少客户机访问Servlet，都不会重复执行init（）。</p>
+<p><strong>service（）：</strong></p>
+<p>它是Servlet的核心，负责响应客户的请求。每当一个客户请求一个HttpServlet对象，该对象的Service()方法就要调用，而且传递给这个方法一个“请求”（ServletRequest）对象和一个“响应”（ServletResponse）对象作为参数。在HttpServlet中已存在Service()方法。默认的服务功能是调用与HTTP请求的方法相应的do功能。</p>
+<p><strong>destroy（）：</strong></p>
+<p>仅执行一次，在服务器端停止且卸载Servlet时执行该方法。当Servlet对象退出生命周期时，负责释放占用的资源。一个Servlet在运行service()方法时可能会产生其他的线程，因此需要确认在调用destroy()方法时，这些线程已经终止或完成。</p>
+</blockquote>
+<h2 id="3-Cookie和Session区别"><a href="#3-Cookie和Session区别" class="headerlink" title="3. Cookie和Session区别"></a>3. Cookie和Session区别</h2><blockquote>
+<ul>
+<li>cookie数据存放在客户的浏览器上，session数据放在服务器上。</li>
+<li>session能够存储任意的Java对象，cookie只能存储String类型的对象。</li>
+<li>无论客户端浏览器做怎么样的设置，session都应该能正常工作。客户端可以选择禁用cookie，但是，session仍然是能够工作的，因为客户端无法禁用服务端的session。</li>
+<li>单个cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个cookie。</li>
+<li>cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗，考虑到安全应当使用session。</li>
+</ul>
+</blockquote>
+<h2 id="4-三大作用域是哪些"><a href="#4-三大作用域是哪些" class="headerlink" title="4. 三大作用域是哪些"></a>4. 三大作用域是哪些</h2><blockquote>
+<ul>
+<li>request作用域：<ul>
+<li>表示一个请求，只要发出一个请求就会创建一个request</li>
+<li>仅在当前请求中有效。</li>
+<li>常用于服务器间同一请求不同页面之间的参数传递。</li>
+</ul>
+</li>
+<li>session作用域：<ul>
+<li>服务器会为每个会话创建一个session对象，所以session中的数据可供当前会话中所有Servlet共享。</li>
+<li>用户登录网站会话开始，直到退出登录会话才结束。一次会话期间只会创建一个session对象。</li>
+<li>常用于web开发中的登录验证页面（当用户登录成功后浏览器分配其一个session键值对）</li>
+</ul>
+</li>
+<li>application（servletContext）作用域：<ul>
+<li>所有的用户都可以取得这个信息，此信息在整个服务器中被保留。application属性范围值，只要设置一次，则所有的页面都可以取得数据。</li>
+<li>ServletContext在服务器启动时创建，在服务器关闭时销毁，一个javaweb应用只能创建一个ServletContext对象。所有客户端在访问服务器时共享同一个ServletContext对象。</li>
+</ul>
+</li>
+<li>如何选择作用域<ul>
+<li>request：跟当前操作功能相关</li>
+<li>session: 跟用户信息相关</li>
+<li>application：跟项目全局信息相关</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="5-转发和重定向区别"><a href="#5-转发和重定向区别" class="headerlink" title="5. 转发和重定向区别"></a>5. 转发和重定向区别</h2><blockquote>
+<ol>
+<li>转发是服务器行为，重定向是客户端行为。</li>
+<li>转发只能转发到本项目中其他的servlet程序，重定向是可以重定向到其他站点的</li>
+<li>重定向的地址是指向最终的地址 - 地址改变，转发是指向的是最原始的地址 - 地址不变</li>
+<li>从数据共享来说,forward:转发页面和转发到的页面可以共享request里面的数据.,redirect:不能共享数据.</li>
+</ol>
+</blockquote>
+<h2 id="6-HTTP协议和TCP协议和UDP协议区别"><a href="#6-HTTP协议和TCP协议和UDP协议区别" class="headerlink" title="6. HTTP协议和TCP协议和UDP协议区别"></a>6. HTTP协议和TCP协议和UDP协议区别</h2><blockquote>
+<p>TCP是一种传输可靠连接的协议；UDP是一种传输不可靠的连接；HTTP是基于TCP的一种超文本连接.</p>
+</blockquote>
+<blockquote>
+<p>传输控制协议TCP(Transmission Control Protocol)</p>
+<ul>
+<li>TCP提供<strong>面向连接</strong>的服务。在传送数据之前必须先建立连接,数据传送结束后要释放连接.</li>
+<li>TCP不提供广播或多播服务。由于TCP要提供<strong>可靠</strong>的,面向连接的传输服务(TCP的可靠体现在TCP在传递数据之前,<strong>会有三次握手来建立连接</strong>,而且在数据传递时,有确认、窗口、重传、流量控制、拥塞控制机制，在数据传完后，还会四次挥手断开连接用来节约系统资源),这不仅使协议数据单元的首部增大很多,还要占用许多处理机资源。</li>
+<li><strong>TCP一般用于文件传输、发送和接收邮件、远程登录场景等.</strong></li>
+</ul>
+</blockquote>
+<h2 id="7-HTTP状态码"><a href="#7-HTTP状态码" class="headerlink" title="7. HTTP状态码"></a>7. HTTP状态码</h2><blockquote>
+<ul>
+<li>1XX：通知</li>
+<li>2XX: 成功<ul>
+<li>200：服务器成功执行了客户端所请求的动作</li>
+<li>201：当服务器依照客户端的请求创建了一个新资源时，发送此响应代码。</li>
+<li>204：若服务器拒绝对PUT、POST或者DELETE请求返回任何状态信息或表示，那么通常采用此响应代码。</li>
+</ul>
+</li>
+<li>3XX 重定向：</li>
+<li>4XX：客户端错误<ul>
+<li>400：服务器收到客户端通过PUT或者POST请求提交的表示，表示的格式正确，但服务器不懂它什么意思</li>
+<li>401：客户端试图对一个受保护的资源进行操作，却又没有提供正确的认证证书</li>
+<li>403：服务器已经理解请求，但是拒绝执行它</li>
+<li>404：文件找不到</li>
+</ul>
+</li>
+<li>5XX 服务端错误：<ul>
+<li>500：服务器遇到了一个未曾预料的状况，导致了它无法完成对请求的处理。一般来说，这个问题都会在服务器的程序码出错时出现。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="8-中文乱码如何处理"><a href="#8-中文乱码如何处理" class="headerlink" title="8. 中文乱码如何处理"></a>8. 中文乱码如何处理</h2><blockquote>
+<ol>
+<li><p>get请求处理方式是在tomcat&#x2F;conf&#x2F;server.xml文件中配置的</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">connectionTimeout</span>=<span class="string">&quot;5000&quot;</span> <span class="attr">disableUploadTimeout</span>=<span class="string">&quot;false&quot;</span> <span class="attr">port</span>=<span class="string">&quot;8888&quot;</span> <span class="attr">protocol</span>=<span class="string">&quot;HTTP/1.1&quot;</span> <span class="attr">redirectPort</span>=<span class="string">&quot;8443&quot;</span> <span class="attr">URIEncoding</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>post请求,需要使用代码来实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">req.setCharacterEncoding(<span class="string">&quot;utf-8&quot;</span>);</span><br></pre></td></tr></table></figure></li>
+</ol>
+</blockquote>
+<h2 id="9-session什么时候失效"><a href="#9-session什么时候失效" class="headerlink" title="9. session什么时候失效"></a>9. session什么时候失效</h2><blockquote>
+<ul>
+<li>服务器会把长时间没有活动的session从服务器内存中清除,此时session便失效,Tomcat中的 session的默认失效时间是30分钟</li>
+<li>调用session的invalidate方法也会导致session失效</li>
+</ul>
+</blockquote>
+<h2 id="10-过滤器的执行原理-x2F-流程"><a href="#10-过滤器的执行原理-x2F-流程" class="headerlink" title="10. 过滤器的执行原理&#x2F;流程"></a>10. 过滤器的执行原理&#x2F;流程</h2><blockquote>
+<ul>
+<li>当web容器接收到对一个资源的请求时，它将判断是否有过滤器与这个资源相关联，如果有，那么容器将把这个请求交给过滤器进行处理。</li>
+<li>在过滤器中，你可以改变请求的内容或者重新设置请求的报头信息，然后再将请求发送给目标资源。当目标资源对请求作出响应时，容器同样会将响应先转发给过滤器，在过滤器中，你可以对响应的内容进行转换，然后再将响应发送给客户端。</li>
+</ul>
+</blockquote>
+<h2 id="11-监听器的执行原理"><a href="#11-监听器的执行原理" class="headerlink" title="11. 监听器的执行原理"></a>11. 监听器的执行原理</h2><blockquote>
+<ul>
+<li>监听器，字面上的理解就是监听观察某个事件（程序）的发生情况，当被监听的事件真的发生了的时候，事件发生者（事件源） 就会给注册该事件的监听者（监听器）发送消息，告诉监听者某些信息，同时监听者也可以获得一份事件对象，根据这个对象可以获得相关属性和执行相关操作。</li>
+<li>监听器的注册和调用由容器（如tomcat等）自动完成，被监听对象创建，修改，删除，销毁等事件时，容器调用与之相关的方法，用户在这些方法中编写事件处理代码即被执行。</li>
+<li>按照监听对象划分：<ul>
+<li>监听应用程序环境对象（ServletContext）的事件监听器。</li>
+<li>监听用户会话对象（httpSession）的事件监听器。</li>
+<li>监听请求对象（ServletRequest）的事件监听器。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="12-过滤器使用场景"><a href="#12-过滤器使用场景" class="headerlink" title="12. 过滤器使用场景"></a>12. 过滤器使用场景</h2><blockquote>
+<ul>
+<li>防止未登录就进入界面</li>
+<li>过滤敏感词汇等场景</li>
+<li>资源访问触发事件过滤</li>
+</ul>
+</blockquote>
+<h2 id="13-过滤器和拦截器区别"><a href="#13-过滤器和拦截器区别" class="headerlink" title="13. 过滤器和拦截器区别"></a>13. 过滤器和拦截器区别</h2><blockquote>
+<ol>
+<li>拦截器是基于java的反射机制的，而过滤器是基于函数回调。</li>
+<li>拦截器不依赖与servlet容器，过滤器依赖与servlet容器。</li>
+<li>拦截器只能对action请求起作用，而过滤器则可以对几乎所有的请求起作用。</li>
+<li>拦截器可以访问action上下文、值栈里的对象，而过滤器不能访问。</li>
+<li>在action的生命周期中，拦截器可以多次被调用，而过滤器只能在容器初始化时被调用一次。</li>
+<li>拦截器可以获取IOC容器中的各个bean，而过滤器就不行，这点很重要，在拦截器里注入一个service，可以调用业务逻辑。</li>
+</ol>
+</blockquote>
+<h2 id="14-HTTP的请求头包含哪些-响应头包含哪些"><a href="#14-HTTP的请求头包含哪些-响应头包含哪些" class="headerlink" title="14. HTTP的请求头包含哪些,响应头包含哪些"></a>14. HTTP的请求头包含哪些,响应头包含哪些</h2><blockquote>
+<ul>
+<li>请求头：<ul>
+<li>请求的方式</li>
+<li>客户端能接收的资源类型</li>
+<li>客户端接收的语言类型</li>
+<li>连接的目标主机和端口号</li>
+<li>客户端版本号的名字</li>
+<li>客户端能接收的压缩数据的类型</li>
+<li>客户端请求服务端的时间</li>
+</ul>
+</li>
+<li>响应：<ul>
+<li>响应采用的协议和版本号</li>
+<li>状态码</li>
+<li>服务端需要客户端访问的页面路径</li>
+<li>服务端发送的语言类型</li>
+<li>服务端发送的类型及采用的编码方式</li>
+<li>服务端对该资源最后修改的时间</li>
+<li>维护客户端和服务端的连接关系</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="15-url和uri区别"><a href="#15-url和uri区别" class="headerlink" title="15. url和uri区别"></a>15. url和uri区别</h2><blockquote>
+<ul>
+<li>URI是统一资源标识符，URL是URI的一个子集，是统一资源定位符。</li>
+<li>URI标记了一个网络资源，URL是用地址标记了一个互联网资源。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>比如:”身份证”可以用来唯一标识一个人 , 相当于uri.我们也可以用动物住址协议:&#x2F;&#x2F;地球&#x2F;中国&#x2F;浙江省&#x2F;杭州市&#x2F;<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E8%A5%BF%E6%B9%96%E5%8C%BA&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:154309494%7D">西湖区</a>&#x2F;某大学&#x2F;14号宿舍楼&#x2F;525号寝&#x2F;张三.人来定位到这个人,相当于url</p>
+</blockquote>
+<h2 id="16-MVC思想"><a href="#16-MVC思想" class="headerlink" title="16. MVC思想"></a>16. MVC思想</h2><blockquote>
+<p>MVC是一种软件架构的思想，将软件按照模型、视图、控制器来划分。模型负责封装业务处理逻辑，视图负责输入和输出(表示逻辑)，控制器负责协调模型和视图。</p>
+<p><em><strong>模型(model)：</strong></em></p>
+<p>封装：需要先写接口,然后实现接口中声明的方法。</p>
+<p>业务处理逻辑：业务本身的处理流程，另外，还包括为保证业务处理正常可靠执行的基础服务(事务、安全、日志等等)。</p>
+<p><em><strong>视图(view):</strong></em></p>
+<p>输入：提供相应的操作界面，方便用户使用。</p>
+<p>输出：将模型返回的结果以合适的方式来展现。</p>
+<p><em><strong>控制器(controller):</strong></em></p>
+<p>协调: 视图向控制器发请求，由控制器来选择相应的模型来处理；模型返回的结果给控制器，由控制器来选择合适的视图，生成相应的界面给用户。</p>
+</blockquote>
+<h1 id="2-JSP部分"><a href="#2-JSP部分" class="headerlink" title="2. JSP部分"></a>2. JSP部分</h1><h2 id="1-jsp九大内置对象"><a href="#1-jsp九大内置对象" class="headerlink" title="1. jsp九大内置对象"></a>1. jsp九大内置对象</h2><blockquote>
+<table>
+<thead>
+<tr>
+<th>对 象</th>
+<th>类型</th>
+<th>说 明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>request</td>
+<td>javax.servlet.http.HttpServletRequest</td>
+<td>获取用户请求信息</td>
+</tr>
+<tr>
+<td>response</td>
+<td>javax.servlet.http.HttpServletResponse</td>
+<td>响应客户端请求，并将处理信息返回到客户端</td>
+</tr>
+<tr>
+<td>out</td>
+<td>javax.servlet.jsp.JspWriter</td>
+<td>输出内容到 HTML 中</td>
+</tr>
+<tr>
+<td>session</td>
+<td>javax.servlet.http.HttpSession</td>
+<td>用来保存用户信息</td>
+</tr>
+<tr>
+<td>application</td>
+<td>javax.servlet.ServletContext</td>
+<td>所有用户共享信息</td>
+</tr>
+<tr>
+<td>config</td>
+<td>javax.servlet.ServletConfig</td>
+<td>这是一个 Servlet 配置对象，用于 Servlet 和页面的初始化参数</td>
+</tr>
+<tr>
+<td>pageContext</td>
+<td>javax.servlet.jsp.PageContext</td>
+<td>JSP 的页面容器，用于访问 page、request、application 和 session 的属性</td>
+</tr>
+<tr>
+<td>page</td>
+<td>javax.servlet.jsp.HttpJspPage</td>
+<td>类似于 Java 类的 this 关键字，表示当前 JSP 页面</td>
+</tr>
+<tr>
+<td>exception</td>
+<td>java.lang.Throwable</td>
+<td>该对象用于处理 JSP 文件执行时发生的错误和异常；只有在 JSP 页面的 page 指令中指定 isErrorPage 的取值 true 时，才可以在本页面使用 exception 对象。</td>
+</tr>
+</tbody></table>
+</blockquote>
+<h2 id="2-静态包含和动态包含区别"><a href="#2-静态包含和动态包含区别" class="headerlink" title="2. 静态包含和动态包含区别"></a>2. 静态包含和动态包含区别</h2><blockquote>
+<ol>
+<li>静态包含：&lt;%@include file&#x3D;”被包含页面”%&gt;</li>
+<li>动态包含：&lt;jsp:include page&#x3D;”被包含页面” flush&#x3D;”true”&gt;</li>
+</ol>
+</blockquote>
+<blockquote>
+<p><strong>区别</strong></p>
+<ol>
+<li>执行时间不同 <ul>
+<li>静态包含发生在：JSP —&gt; java文件阶段。</li>
+<li>动态包含发生在：执行class文件阶段,动态加入。</li>
+</ul>
+</li>
+<li>无论是动态包含还是静态包含，其request对象都是相同的。</li>
+<li>静态包含最终编译成一个java文件，有一个request对象很好理解。而动态包含最终编译成多个jsp文件，为何会使用一个request对象呢？其实<strong>这些jsp组合的过程是一个请求转发的过程</strong>，自然也使用同一个request对象了。</li>
+</ol>
+</blockquote>
+<p>#3. Ajax部分</p>
+<h2 id="1-什么是ajax"><a href="#1-什么是ajax" class="headerlink" title="1. 什么是ajax"></a>1. 什么是ajax</h2><blockquote>
+<p>AJAX是“Asynchronous JavaScript and XML”的缩写。他是指一种创建交互式网页应用的网页开发技术。客户端与服务器，可以在【不必刷新整个浏览器】的情况下，与服务器进行异步通讯的技术</p>
+</blockquote>
+<p>##2. XMLhttprequest对象</p>
+<blockquote>
+<p>Ajax的核心是JavaScript对象XmlHttpRequest。，它是一种支持异步请求的技术。简而言之，XmlHttpRequest可以使用JavaScript向服务器提出请求并处理响应，而不阻塞用户。通过XMLHttpRequest对象，Web开发人员可以在页面加载以后进行页面的局部更新</p>
+</blockquote>
+<h2 id="3-xhr常用方法和属性"><a href="#3-xhr常用方法和属性" class="headerlink" title="3. xhr常用方法和属性"></a>3. xhr常用方法和属性</h2><blockquote>
+<ul>
+<li>方法<ul>
+<li>**open()(String method,String url,boolean asynch,String username,String password)**：该方法创建http请求<ul>
+<li>第一个参数是指定提交方式(post、get)</li>
+<li>第二个参数是指定要提交的地址是哪</li>
+<li>第三个参数是指定是异步还是同步(true表示异步，false表示同步)</li>
+<li>第四和第五参数在http认证的时候会用到。是可选的</li>
+</ul>
+</li>
+<li>**setRequestHeader(String header,String value)**：设置消息头（使用post方式才会使用到，get方法并不需要调用该方法）</li>
+<li>**send(content)**：发送请求给服务器</li>
+</ul>
+</li>
+<li>属性<ul>
+<li>onreadystatechange：请求状态改变的事件触发器（readyState变化时会调用此方法），一般用于指定回调函数</li>
+<li>readyState：请求状态readyState一改变，回调函数被调用，<strong>它有5个状态</strong><ul>
+<li><strong>0：未初始化</strong></li>
+<li><strong>1：open方法成功调用以后</strong></li>
+<li><strong>2：服务器已经应答客户端的请求</strong></li>
+<li><strong>3：交互中。Http头信息已经接收，响应数据尚未接收。</strong></li>
+<li><strong>4：完成。数据接收完成</strong></li>
+</ul>
+</li>
+<li>responseText：服务器返回的文本内容</li>
+<li>responseXML：服务器返回的兼容DOM的XML内容</li>
+<li>status：服务器返回的状态码</li>
+<li>statusText：服务器返回状态码的文本信息</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="4-Ajax怎么解决浏览器缓存问题"><a href="#4-Ajax怎么解决浏览器缓存问题" class="headerlink" title="4. Ajax怎么解决浏览器缓存问题"></a>4. Ajax怎么解决浏览器缓存问题</h2><blockquote>
+<ul>
+<li>在ajax发送请求前加上 anyAjaxObj.setRequestHeader(“If-Modified-Since”,”0”)。</li>
+<li>在ajax发送请求前加上 anyAjaxObj.setRequestHeader(“Cache-Control”,”no-cache”)。</li>
+<li>在URL后面加上一个随机数： “fresh&#x3D;” + Math.random();。</li>
+<li>在URL后面加上时间戳：”nowtime&#x3D;” + new Date().getTime();。</li>
+<li>如果是使用jQuery，直接这样就可以了 $.ajaxSetup({cache:false})。这样页面的所有ajax都会执行这条语句就是不需要保存缓存记录。</li>
+</ul>
+</blockquote>
+<h2 id="5-JS同源策略"><a href="#5-JS同源策略" class="headerlink" title="5. JS同源策略"></a>5. JS同源策略</h2><blockquote>
+<p>同源策略限制了一个源（origin）中加载文本或脚本与来自其它源（origin）中资源的交互方式。</p>
+<p>同源定义:</p>
+<p>如果两个页面拥有 <strong>相同</strong> 的 <strong>协议（protocol）</strong>，<strong>端口（如果指定）</strong>，和 <strong>主机</strong>，那么这两个页面就属于同一个源（origin）。</p>
+<p>下表给出了相对 <a target="_blank" rel="noopener" href="https://link.segmentfault.com/?enc=+m+FsWJJpoKhlgE/WYV1lA==.slo2r0fzGa52/mYIruVzyPn2wfy+QtX481gOJAZw0MPtrBpRlkFOfkhb/NYnIJXZ">http://store.company.com/dir/page.html</a> 同源检测的示例:</p>
+<table>
+<thead>
+<tr>
+<th>URL</th>
+<th>结果</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://link.segmentfault.com/?enc=/Q790/P9LnDqJJ3NEXVGCQ==.fE04vzSb5WeNVv61f/yIq/tOnFGY1jrTMPjAI1Byh54215mJLARZZQtzTfou5Mtw">http://store.company.com/dir2/other.html</a></td>
+<td>成功</td>
+<td></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://link.segmentfault.com/?enc=m6GUqeHFRqjo4e9fL7V2wQ==.O49hPfW3bnkxs9mCO/AGltxZGfiUwTYyzCGZrBwP+1vZvhiTZdAKJkTFhUAgRL/x">http://store.company.com/dir/inner/another.html</a></td>
+<td>成功</td>
+<td></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://link.segmentfault.com/?enc=P1xbhKHMSS7QvU5LaBuVqA==.xRIAVd+cNgbDWr9uanW3H1pvJoV9vbB5dxJElh3XORXpOJXKzhskIruLw7FcR4E3">https://store.company.com/secure.html</a></td>
+<td>失败</td>
+<td>协议不同</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://link.segmentfault.com/?enc=C0zJqG99Vq7++Rc5/Kwtew==.ely1OVv2D0/W4/SAWV1PHVglKLgxpXZyBLZoMoUwjq8=">http://store.company.com</a>:81&#x2F;dir&#x2F;etc.html</td>
+<td>失败</td>
+<td>端口不同</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://link.segmentfault.com/?enc=C1MGK8tHvI6s0LOvv7Ev2Q==.lAF8J8s5M3xKvFWJljSl6xqJaLBHGl9w6EqkwmclZSyrFIHD4h7BnfwtChpkJ93Q">http://news.company.com/dir/other.html</a></td>
+<td>失败</td>
+<td>主机名不同</td>
+</tr>
+</tbody></table>
+</blockquote>
+<h2 id="6-如何解决跨域"><a href="#6-如何解决跨域" class="headerlink" title="6. 如何解决跨域"></a>6. 如何解决跨域</h2><blockquote>
+<ol>
+<li>跨域资源共享（CORS）</li>
+<li>nginx代理跨域</li>
+</ol>
+</blockquote>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title="0" data-url="http://link.hhtjim.com/163/22821023.mp3"></li>
+                        
+                    
+                        
+                            <li title="1" data-url="http://link.hhtjim.com/163/441116287.mp3"></li>
+                        
+                    
+                        
+                            <li title="2" data-url="http://link.hhtjim.com/163/509726618.mp3"></li>
+                        
+                    
+                        
+                            <li title="3" data-url="http://link.hhtjim.com/163/465262028.mp3"></li>
+                        
+                    
+                        
+                            <li title="4" data-url="http://link.hhtjim.com/163/1357220737.mp3"></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+        
+    <div id="gitalk-container" class="comment link"
+		data-enable="false"
+        data-ae="false"
+        data-ci=""
+        data-cs=""
+        data-r=""
+        data-o=""
+        data-a=""
+        data-d="false"
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Servlet%E9%83%A8%E5%88%86"><span class="toc-number">1.</span> <span class="toc-text">1. Servlet部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-get%E8%AF%B7%E6%B1%82%E5%92%8Cpost%E8%AF%B7%E6%B1%82%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">1. get请求和post请求区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Servlet%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">1.2.</span> <span class="toc-text">2. Servlet生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Cookie%E5%92%8CSession%E5%8C%BA%E5%88%AB"><span class="toc-number">1.3.</span> <span class="toc-text">3. Cookie和Session区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%B8%89%E5%A4%A7%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%98%AF%E5%93%AA%E4%BA%9B"><span class="toc-number">1.4.</span> <span class="toc-text">4. 三大作用域是哪些</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%BD%AC%E5%8F%91%E5%92%8C%E9%87%8D%E5%AE%9A%E5%90%91%E5%8C%BA%E5%88%AB"><span class="toc-number">1.5.</span> <span class="toc-text">5. 转发和重定向区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-HTTP%E5%8D%8F%E8%AE%AE%E5%92%8CTCP%E5%8D%8F%E8%AE%AE%E5%92%8CUDP%E5%8D%8F%E8%AE%AE%E5%8C%BA%E5%88%AB"><span class="toc-number">1.6.</span> <span class="toc-text">6. HTTP协议和TCP协议和UDP协议区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-HTTP%E7%8A%B6%E6%80%81%E7%A0%81"><span class="toc-number">1.7.</span> <span class="toc-text">7. HTTP状态码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86"><span class="toc-number">1.8.</span> <span class="toc-text">8. 中文乱码如何处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-session%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%A4%B1%E6%95%88"><span class="toc-number">1.9.</span> <span class="toc-text">9. session什么时候失效</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86-x2F-%E6%B5%81%E7%A8%8B"><span class="toc-number">1.10.</span> <span class="toc-text">10. 过滤器的执行原理&#x2F;流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E7%9B%91%E5%90%AC%E5%99%A8%E7%9A%84%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86"><span class="toc-number">1.11.</span> <span class="toc-text">11. 监听器的执行原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E8%BF%87%E6%BB%A4%E5%99%A8%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.12.</span> <span class="toc-text">12. 过滤器使用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%E8%BF%87%E6%BB%A4%E5%99%A8%E5%92%8C%E6%8B%A6%E6%88%AA%E5%99%A8%E5%8C%BA%E5%88%AB"><span class="toc-number">1.13.</span> <span class="toc-text">13. 过滤器和拦截器区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-HTTP%E7%9A%84%E8%AF%B7%E6%B1%82%E5%A4%B4%E5%8C%85%E5%90%AB%E5%93%AA%E4%BA%9B-%E5%93%8D%E5%BA%94%E5%A4%B4%E5%8C%85%E5%90%AB%E5%93%AA%E4%BA%9B"><span class="toc-number">1.14.</span> <span class="toc-text">14. HTTP的请求头包含哪些,响应头包含哪些</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15-url%E5%92%8Curi%E5%8C%BA%E5%88%AB"><span class="toc-number">1.15.</span> <span class="toc-text">15. url和uri区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#16-MVC%E6%80%9D%E6%83%B3"><span class="toc-number">1.16.</span> <span class="toc-text">16. MVC思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-JSP%E9%83%A8%E5%88%86"><span class="toc-number">2.</span> <span class="toc-text">2. JSP部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-jsp%E4%B9%9D%E5%A4%A7%E5%86%85%E7%BD%AE%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.1.</span> <span class="toc-text">1. jsp九大内置对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB%E5%92%8C%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB%E5%8C%BA%E5%88%AB"><span class="toc-number">2.2.</span> <span class="toc-text">2. 静态包含和动态包含区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AFajax"><span class="toc-number">2.3.</span> <span class="toc-text">1. 什么是ajax</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-xhr%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%92%8C%E5%B1%9E%E6%80%A7"><span class="toc-number">2.4.</span> <span class="toc-text">3. xhr常用方法和属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Ajax%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98"><span class="toc-number">2.5.</span> <span class="toc-text">4. Ajax怎么解决浏览器缓存问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-JS%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5"><span class="toc-number">2.6.</span> <span class="toc-text">5. JS同源策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F"><span class="toc-number">2.7.</span> <span class="toc-text">6. 如何解决跨域</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

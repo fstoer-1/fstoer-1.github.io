@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SpringBoot框架 - 勉~杌子生的博客</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="1. SpringBoot部分1. 谈谈SpringBoot的优势
+
+spring Boot 是 Spring 开源组织下的子项目，是 Spring 组件一站式解决方案，主要是简化了使用 Sprin,"> 
+    <meta name="author" content="Fstoer BG"> 
+    <link rel="alternative" href="atom.xml" title="勉~杌子生的博客" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+    
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="SpringBoot框架 - 勉~杌子生的博客"/>
+    <meta name="twitter:description" content="1. SpringBoot部分1. 谈谈SpringBoot的优势
+
+spring Boot 是 Spring 开源组织下的子项目，是 Spring 组件一站式解决方案，主要是简化了使用 Sprin,"/>
+    
+    
+    
+    
+    <meta property="og:site_name" content="勉~杌子生的博客"/>
+    <meta property="og:type" content="object"/>
+    <meta property="og:title" content="SpringBoot框架 - 勉~杌子生的博客"/>
+    <meta property="og:description" content="1. SpringBoot部分1. 谈谈SpringBoot的优势
+
+spring Boot 是 Spring 开源组织下的子项目，是 Spring 组件一站式解决方案，主要是简化了使用 Sprin,"/>
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script>window.searchDbPath = "/search.xml";</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">勉~杌子生的博客</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://fstoer-1.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">SpringBoot框架</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">SpringBoot框架</h1>
+        <div class="stuff">
+            <span>九月 04, 2022</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="1-SpringBoot部分"><a href="#1-SpringBoot部分" class="headerlink" title="1. SpringBoot部分"></a>1. SpringBoot部分</h1><h2 id="1-谈谈SpringBoot的优势"><a href="#1-谈谈SpringBoot的优势" class="headerlink" title="1. 谈谈SpringBoot的优势"></a>1. 谈谈SpringBoot的优势</h2><blockquote>
+<ul>
+<li>spring Boot 是 Spring 开源组织下的子项目，是 Spring 组件一站式解决方案，主要是简化了使用 Spring 的难度，简省了繁重的配置，提供了各种启动器，开发者能快速上手</li>
+<li>容易上手，提升开发效率，为 Spring 开发提供一个更快、更简单的开发框架。</li>
+<li>开箱即用，远离繁琐的配置。</li>
+<li>提供了一系列大型项目通用的非业务性功能，例如：内嵌服务器、安全管理、运行数据监控、运行状况检查和外部化配置等。</li>
+<li>SpringBoot总结就是使编码变简单、配置变简单、部署变简单、监控变简单等等</li>
+</ul>
+</blockquote>
+<h2 id="2-Spring-Boot-的核心注解是哪个？它主要由哪几个注解组成的？"><a href="#2-Spring-Boot-的核心注解是哪个？它主要由哪几个注解组成的？" class="headerlink" title="2. Spring Boot 的核心注解是哪个？它主要由哪几个注解组成的？"></a>2. <strong>Spring Boot 的核心注解是哪个？它主要由哪几个注解组成的？</strong></h2><blockquote>
+<p>启动类上面的注解是@SpringBootApplication，它也是 Spring Boot 的核心注解，主要组合包含了以下 3 个注解：</p>
+<p><strong>@SpringBootConfiguration：组合了 @Configuration 注解，实现配置文件的功能。</strong></p>
+<p><strong>@EnableAutoConfiguration：打开自动配置的功能，也可以关闭某个自动配置的选项，如关闭数据源自动配置功能： @SpringBootApplication(exclude &#x3D; { DataSourceAutoConfiguration.class })。</strong></p>
+<p>@ComponentScan：Spring组件扫描。</p>
+</blockquote>
+<h2 id="3-Spring-Boot-需要独立的容器运行吗？"><a href="#3-Spring-Boot-需要独立的容器运行吗？" class="headerlink" title="3. Spring Boot 需要独立的容器运行吗？"></a>3. <strong>Spring Boot 需要独立的容器运行吗？</strong></h2><blockquote>
+<p>可以不需要，内置了 Tomcat&#x2F; Jetty 等容器。</p>
+</blockquote>
+<h2 id="4-你如何理解-Spring-Boot-中的-Starters？"><a href="#4-你如何理解-Spring-Boot-中的-Starters？" class="headerlink" title="4. 你如何理解 Spring Boot 中的 Starters？"></a>4. <strong>你如何理解 Spring Boot 中的 Starters？</strong></h2><blockquote>
+<p>Starters可以理解为启动器，<strong>它包含了一系列可以集成到应用里面的依赖包</strong>，你可以一站式集成 Spring 及其他技术，而不需要到处找示例代码和依赖包。如你想使用 Spring JPA 访问数据库，只要加入 <strong>spring-boot-starter-data-jpa</strong> 启动器依赖就能使用了。</p>
+</blockquote>
+<h2 id="5-SpringBoot自动化配置原理-⭐️"><a href="#5-SpringBoot自动化配置原理-⭐️" class="headerlink" title="5. SpringBoot自动化配置原理 ⭐️"></a>5. SpringBoot自动化配置原理 ⭐️</h2><blockquote>
+<p>主要是Spring Boot的启动类上的核心注解SpringBootApplication注解主配置类，有了这个主配置类启动时就会为SpringBoot开启一个**@EnableAutoConfiguration**注解自动配置功能。</p>
+<p>有了这个EnableAutoConfiguration的话就会：</p>
+<ol>
+<li><strong>从配置文件META_INF&#x2F;spring.factories加载可能用到的自动配置类</strong></li>
+<li>去重，并将exclude和excludeName属性携带的类排除</li>
+<li>过滤，将满足条件（@Conditional）的自动配置类返回</li>
+</ol>
+</blockquote>
+<h2 id="6-微服务和分布式以及集群区别-⭐️"><a href="#6-微服务和分布式以及集群区别-⭐️" class="headerlink" title="6. 微服务和分布式以及集群区别 ⭐️"></a>6. 微服务和分布式以及集群区别 ⭐️</h2><blockquote>
+<ol>
+<li><p>分布式：一个业务分<strong>拆</strong>多个子业务，<strong>部署在不同的服务器上</strong> - 分摊的是压力</p>
+</li>
+<li><p>集群：同一个业务，部署在多个服务器上&#x3D;&gt; 高可用,高并发</p>
+</li>
+<li><p>微服务:是一种架构风格，一个大型复杂软件应用由一个或多个微服务组成。系统中的<strong>各个微服务可被独立部署</strong>，各个微服务之间是松耦合的。每个微服务仅关注于完成一件任务并很好地完成该任务。在所有情况下，每个任务代表着一个小的业务能力。</p>
+<p><strong>微服务与分布式的细微差别是，微服务的应用不一定是分散在多个服务器上，他也可以是同一个服务器。</strong></p>
+</li>
+</ol>
+<p><strong>分布式是指将不同的业务分布在不同的地方。而集群指的是将几台服务器集中在一起，实现同一业务</strong></p>
+<p><strong>简单说，分布式是以缩短单个任务的执行时间来提升效率的，而集群则是通过提高单位时间内执行的任务数来提升效率。</strong></p>
+<p>分布式中的每一个节点，都可以做集群。而集群并不一定就是分布式的</p>
+<blockquote>
+<p>举例：就比如新浪网，访问的人多了，他可以做一个集群，前面放一个响应服务器，后面几台服务器完成同一业务，如果有业务访问的时候，响应服务器看哪台服务器的负载不是很重，就将给哪一台去完成。<br>而分布式，从窄意上理解，也跟集群差不多，但是它的组织比较松散，不像集群，有一个组织性，一台服务器垮了，其它的服务器可以顶上来。<br>分布式的每一个节点，都完成不同的业务，一个节点垮了，那这个业务就不可访问了</p>
+</blockquote>
+</blockquote>
+<h2 id="7-Springboot常用注解"><a href="#7-Springboot常用注解" class="headerlink" title="7. Springboot常用注解"></a>7. Springboot常用注解</h2><blockquote>
+<p> @RestController 和 @RequestMapping </p>
+<p> @ResponseBody</p>
+<p>@Component</p>
+<p>@AutoWired</p>
+<p>@RequestParam</p>
+<p> @PathVariable</p>
+<p>@ControllerAdvice和@ExceptionHandler （ Exception.class ）</p>
+</blockquote>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title="0" data-url="http://link.hhtjim.com/163/22821023.mp3"></li>
+                        
+                    
+                        
+                            <li title="1" data-url="http://link.hhtjim.com/163/441116287.mp3"></li>
+                        
+                    
+                        
+                            <li title="2" data-url="http://link.hhtjim.com/163/509726618.mp3"></li>
+                        
+                    
+                        
+                            <li title="3" data-url="http://link.hhtjim.com/163/465262028.mp3"></li>
+                        
+                    
+                        
+                            <li title="4" data-url="http://link.hhtjim.com/163/1357220737.mp3"></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+        
+    <div id="gitalk-container" class="comment link"
+		data-enable="false"
+        data-ae="false"
+        data-ci=""
+        data-cs=""
+        data-r=""
+        data-o=""
+        data-a=""
+        data-d="false"
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-SpringBoot%E9%83%A8%E5%88%86"><span class="toc-number">1.</span> <span class="toc-text">1. SpringBoot部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%B0%88%E8%B0%88SpringBoot%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.1.</span> <span class="toc-text">1. 谈谈SpringBoot的优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Spring-Boot-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B3%A8%E8%A7%A3%E6%98%AF%E5%93%AA%E4%B8%AA%EF%BC%9F%E5%AE%83%E4%B8%BB%E8%A6%81%E7%94%B1%E5%93%AA%E5%87%A0%E4%B8%AA%E6%B3%A8%E8%A7%A3%E7%BB%84%E6%88%90%E7%9A%84%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">2. Spring Boot 的核心注解是哪个？它主要由哪几个注解组成的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Spring-Boot-%E9%9C%80%E8%A6%81%E7%8B%AC%E7%AB%8B%E7%9A%84%E5%AE%B9%E5%99%A8%E8%BF%90%E8%A1%8C%E5%90%97%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">3. Spring Boot 需要独立的容器运行吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%BD%A0%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3-Spring-Boot-%E4%B8%AD%E7%9A%84-Starters%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">4. 你如何理解 Spring Boot 中的 Starters？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-SpringBoot%E8%87%AA%E5%8A%A8%E5%8C%96%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86-%E2%AD%90%EF%B8%8F"><span class="toc-number">1.5.</span> <span class="toc-text">5. SpringBoot自动化配置原理 ⭐️</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%A5%E5%8F%8A%E9%9B%86%E7%BE%A4%E5%8C%BA%E5%88%AB-%E2%AD%90%EF%B8%8F"><span class="toc-number">1.6.</span> <span class="toc-text">6. 微服务和分布式以及集群区别 ⭐️</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-Springboot%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.7.</span> <span class="toc-text">7. Springboot常用注解</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

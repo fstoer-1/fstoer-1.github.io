@@ -1,0 +1,477 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Redis - 勉~杌子生的博客</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="1. Redis部分1. Redis分布式锁2. Redis缓存穿透和击穿和雪崩效应 ⭐️⭐️⭐️
+复习目标 - 三种场景以及解决方案
+设计一个缓存系统，不得不要考虑的问题就是：缓存穿透、缓存击穿与,"> 
+    <meta name="author" content="Fstoer BG"> 
+    <link rel="alternative" href="atom.xml" title="勉~杌子生的博客" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+    
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="Redis - 勉~杌子生的博客"/>
+    <meta name="twitter:description" content="1. Redis部分1. Redis分布式锁2. Redis缓存穿透和击穿和雪崩效应 ⭐️⭐️⭐️
+复习目标 - 三种场景以及解决方案
+设计一个缓存系统，不得不要考虑的问题就是：缓存穿透、缓存击穿与,"/>
+    
+    
+    
+    
+    <meta property="og:site_name" content="勉~杌子生的博客"/>
+    <meta property="og:type" content="object"/>
+    <meta property="og:title" content="Redis - 勉~杌子生的博客"/>
+    <meta property="og:description" content="1. Redis部分1. Redis分布式锁2. Redis缓存穿透和击穿和雪崩效应 ⭐️⭐️⭐️
+复习目标 - 三种场景以及解决方案
+设计一个缓存系统，不得不要考虑的问题就是：缓存穿透、缓存击穿与,"/>
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script>window.searchDbPath = "/search.xml";</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">勉~杌子生的博客</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://fstoer-1.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Redis</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Redis</h1>
+        <div class="stuff">
+            <span>八月 18, 2022</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="1-Redis部分"><a href="#1-Redis部分" class="headerlink" title="1. Redis部分"></a>1. Redis部分</h1><h2 id="1-Redis分布式锁"><a href="#1-Redis分布式锁" class="headerlink" title="1. Redis分布式锁"></a>1. Redis分布式锁</h2><h2 id="2-Redis缓存穿透和击穿和雪崩效应-⭐️⭐️⭐️"><a href="#2-Redis缓存穿透和击穿和雪崩效应-⭐️⭐️⭐️" class="headerlink" title="2. Redis缓存穿透和击穿和雪崩效应 ⭐️⭐️⭐️"></a>2. Redis缓存穿透和击穿和雪崩效应 ⭐️⭐️⭐️</h2><blockquote>
+<p>复习目标 - 三种场景以及解决方案</p>
+<p>设计一个缓存系统，不得不要考虑的问题就是：<em><strong>缓存穿透</strong></em>、<em><strong>缓存击穿</strong></em>与失效时的<em><strong>雪崩效应</strong></em>。</p>
+<p>前台请求，后台先从缓存中取数据，取到直接返回结果，取不到时从数据库中取，数据库取到更新缓存，并返回结果，数据库也没取到，那直接返回空结果。，不得不要考虑的问题就是：缓存穿透、缓存击穿与失效时的雪崩效应。</p>
+<p>前台请求，后台先从缓存中取数据，取到直接返回结果，取不到时从数据库中取，数据库取到更新缓存，并返回结果，数据库也没取到，那直接返回空结果。</p>
+</blockquote>
+<blockquote>
+<p><img src="/imgs/redis01.png">  </p>
+</blockquote>
+<h3 id="2-1-缓存穿透"><a href="#2-1-缓存穿透" class="headerlink" title="2.1 缓存穿透"></a>2.1 缓存穿透</h3><blockquote>
+<p>缓存穿透是指<strong>缓存和数据库中都没有的数据</strong>，而用户不断发起请求。由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。</p>
+<p><strong>在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</strong></p>
+<p>如发起为id为“-1”的数据或id为特别大不存在的数据。这时的用户很可能是攻击者，攻击会导致数据库压力过大。</p>
+</blockquote>
+<p><code>解决方案</code></p>
+<blockquote>
+<ul>
+<li><p><strong>接口层增加校验</strong>，如用户鉴权校验，id做基础校验，id&lt;&#x3D;0的直接拦截；</p>
+</li>
+<li><p>从缓存取不到的数据，在数据库中也没有取到，这时也可以将key-value对写为key-null，缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set 非法参数值 <span class="literal">null</span></span><br><span class="line">set -<span class="number">1</span> <span class="literal">null</span> 设置一下过期时间.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>布隆过滤器</strong></p>
+<blockquote>
+<p> <strong>“某样东西一定不存在或者可能存在”</strong>。</p>
+<p>布隆过滤器是一个 bit 向量或者说 bit 数组 &#x3D; 只能存储0和1,默认都是0</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/43263751">https://zhuanlan.zhihu.com/p/43263751</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904007790673933">https://juejin.cn/post/6844904007790673933</a></p>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h3 id="2-2-缓存击穿"><a href="#2-2-缓存击穿" class="headerlink" title="2.2 缓存击穿"></a>2.2 缓存击穿</h3><blockquote>
+<p>缓存击穿[<strong>在同一个时刻,多个线程请求的是同一行记录</strong>]是指<strong>缓存中没有但数据库中有的数据</strong>（一般是缓存时间到期），这时由于并发用户特别多，同时读缓存没读到数据，又同时去数据库去取数据，引起数据库压力瞬间增大，造成过大压力。</p>
+</blockquote>
+<p><code>解决方案</code></p>
+<blockquote>
+<ul>
+<li><p>设置热点数据永远不过期。</p>
+</li>
+<li><p>接口限流与熔断，降级。<strong>重要的接口一定要做好限流策略</strong>，防止用户恶意刷接口，同时要降级准备，当接口中的某些 服务 不可用时候，进行熔断，失败快速返回机制。</p>
+</li>
+<li><p>**加互斥锁,**代码片段如下,重点是理解思想</p>
+<p><img src="/imgs/redis02.png"></p>
+</li>
+</ul>
+</blockquote>
+<h3 id="2-3-雪崩效应"><a href="#2-3-雪崩效应" class="headerlink" title="2.3 雪崩效应"></a>2.3 雪崩效应</h3><blockquote>
+<p>缓存雪崩是指缓存中<strong>数据大批量到过期时间</strong>，而查询数据量巨大，引起数据库压力过大甚至down机。<em><strong>和缓存击穿不同的是，缓存击穿指并发查同一条数据，缓存雪崩是不同数据都过期了</strong></em>，很多数据都查不到从而查数据库。</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li>缓存数据的过期时间设置随机，防止同一时间大量数据过期现象发生。</li>
+<li>如果缓存数据库是分布式部署，将热点数据均匀分布在不同的缓存数据库中。</li>
+<li>设置热点数据永远不过期。</li>
+</ol>
+</blockquote>
+<h2 id="3-Redis持久化方式⭐️"><a href="#3-Redis持久化方式⭐️" class="headerlink" title="3. Redis持久化方式⭐️"></a>3. Redis持久化方式⭐️</h2><blockquote>
+<p><strong>rdb和aof优缺点对比.</strong></p>
+<p>save和bgsave,自动保存的触发机制</p>
+<p>重写机制&#x2F;策略</p>
+</blockquote>
+<blockquote>
+<p>Redis 是一种内存数据库，将数据保存在内存中，读写效率要比传统的将数据保存在磁盘上的数据库要快很多。但是一旦进程退出，Redis 的数据就会丢失。</p>
+<p>为了解决这个问题，Redis 提供了 <strong>RDB 和 AOF</strong> 两种持久化方案，将内存中的数据保存到磁盘中，避免数据丢失</p>
+<ul>
+<li><strong>快照方式</strong><br>对数据在某时某点的一种完整备份。<strong>例如Redis RDB</strong>，MySQL Dump都是这种方式。</li>
+<li><strong>写日志方式</strong><br>任何数据的更新都记录在日志当中，某个时候要进行数据的恢复时，重走一遍日志的完整过程。例如<strong>MySQL的Binlog</strong>，HBase的HLog和<strong>Redis的AOF</strong>，就是这种方式。</li>
+</ul>
+</blockquote>
+<h2 id="4-Redis发布订阅模式"><a href="#4-Redis发布订阅模式" class="headerlink" title="4. Redis发布订阅模式"></a>4. Redis发布订阅模式</h2><blockquote>
+<p>Redis发布与发布功能（Pub&#x2F;Sub）是基于事件座位基本的通信机制，是目前应用比较普遍的通信模型，它的目的主要是解除消息的发布者与订阅者之间的耦合关系。</p>
+<p>Redis作为消息发布和订阅之间的服务器，起到桥梁的作用，在Redis里面有一个channel的概念，也就是频道，发布者通过指定发布到某个频道，然后只要有订阅者订阅了该频道，该消息就会发送给订阅者</p>
+</blockquote>
+<h2 id="5-Redis发布订阅模式用做消息队列和Rabbitmq的区别"><a href="#5-Redis发布订阅模式用做消息队列和Rabbitmq的区别" class="headerlink" title="5. Redis发布订阅模式用做消息队列和Rabbitmq的区别"></a>5. Redis发布订阅模式用做消息队列和Rabbitmq的区别</h2><blockquote>
+<ul>
+<li><p>可靠性</p>
+<ul>
+<li>redis ：没有相应的机制保证消息的可靠消费，如果发布者发布一条消息，而没有对应的订阅者的话，这条消息将丢失，不会存在内存中；</li>
+<li>rabbitmq：<strong>具有消息消费确认机制</strong>，如果发布一条消息，还没有消费者消费该队列，那么这条消息将一直存放在队列中，直到有消费者消费了该条消息，以此可以保证消息的可靠消费；</li>
+</ul>
+</li>
+<li><p>实时性</p>
+<ul>
+<li><strong>redis:实时性高，</strong>redis作为高效的缓存服务器，所有数据都存在在服务器中，所以它具有更高的实时性</li>
+</ul>
+</li>
+<li><p>消费者负载均衡</p>
+<ul>
+<li>rabbitmq队列可以被多个消费者同时监控消费，但是每一条消息只能被消费一次，由于rabbitmq的消费确认机制，因此它能够根据消费者的消费能力而调整它的负载；</li>
+<li><strong>redis发布订阅模式</strong>，一个队列可以被多个消费者同时订阅，当有消息到达时，会将该消息依次发送给每个订阅者；</li>
+</ul>
+</li>
+<li><p>持久性</p>
+<ul>
+<li><strong>redis</strong>：redis的持久化是针对于整个redis缓存的内容，它有RDB和AOF两种持久化方式（redis持久化方式，后续更新），可以将整个redis实例持久化到磁盘，以此来做数据备份，防止异常情况下导致数据丢失。</li>
+<li><strong>rabbitmq</strong>：队列，消息都可以选择性持久化，持久化粒度更小，更灵活；</li>
+</ul>
+</li>
+<li><p>队列监控</p>
+<ul>
+<li><strong>rabbitmq实现了后台监控平台</strong>，可以在该平台上看到所有创建的队列的详细情况，良好的后台管理平台可以方面我们更好的使用；</li>
+<li><strong>redis没有所谓的监控平台</strong>。</li>
+</ul>
+</li>
+<li><p>总结</p>
+<p><strong>redis</strong>： 轻量级，低延迟，高并发，低可靠性；<br><strong>rabbitmq</strong>：重量级，高可靠，异步，不保证实时；<br>rabbitmq是一个专门的AMQP协议队列，他的优势就在于提供可靠的队列服务，并且可做到异步，而redis主要是用于缓存的，redis的发布订阅模块，可用于实现及时性，且可靠性低的功能。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="6-谈谈对哨兵模式的认识"><a href="#6-谈谈对哨兵模式的认识" class="headerlink" title="6. 谈谈对哨兵模式的认识"></a>6. 谈谈对哨兵模式的认识</h2><blockquote>
+<p>sentinel(哨兵)是用于监控 redis 集群中 Master 状态的工具，是 Redis 的<strong>高可用性</strong>解决方案，sentinel 哨兵模式已经被集成在 redis2.4 之后的版本中。sentinel 是 redis 高可用的解决方案，sentinel 系统可以监视一个或者多个 redis master 服务，以及这些 master 服务的所有从服务；当某个 master 服务下线时，自动将该 master 下的某个从服务升级为 master 服务替代已下线的 master 服务继续处理请求。</p>
+<p><strong>sentinel 可以让 redis 实现主从复制，当一个集群中的 master 失效之后，sentinel 可以选举出一个新的 master 用于自动接替 master 的工作，集群中的其他 redis 服务器自动指向新的 master 同步数据。一般建议 sentinel 采取奇数台，防止某一台 sentinel 无法连接到 master 导致误切换。</strong></p>
+</blockquote>
+<h3 id="6-1-选举规则"><a href="#6-1-选举规则" class="headerlink" title="6-1. 选举规则"></a>6-1. 选举规则</h3><blockquote>
+<ol>
+<li><p>选择健康状态从节点（排除主观下线、断线），排除5秒钟没有心跳的、排除主节点失联超过10*down-after-millisecends</p>
+</li>
+<li><p>选择优先级靠前的,默认值是100</p>
+</li>
+<li><p>选择偏移量最大的</p>
+</li>
+<li><p>选择 runid 最小的从服务器</p>
+</li>
+</ol>
+</blockquote>
+<p>##7. Redis缓存过期淘汰策略</p>
+<h3 id="7-1-问题域"><a href="#7-1-问题域" class="headerlink" title="7-1. 问题域"></a>7-1. 问题域</h3><blockquote>
+<ol>
+<li><p>生产上你们的 redis 设置的内存多少？</p>
+<blockquote>
+<p>如果不设置最大内存大小或者设置内存大小 0 ， <strong>在 64 位操作系统下不限制内存大小</strong>，在 32位操作系统下最多使用 3G 内存</p>
+<p><strong>一般推荐 reids 设置内存为最大物理内存的 3&#x2F;4</strong></p>
+</blockquote>
+</li>
+<li><p>如果配置、修改 redis 内存的大小？ - redis.conf文件中配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">maxmemory </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果内存满了会怎么样？</p>
+<blockquote>
+<p>如果 redis 内存被打满了，会提示 “(error) OOM command not allowed when used memory &gt; ‘maxmemory’.”</p>
+</blockquote>
+</li>
+<li><p>redis 清理内存的方式？定期删除和惰性删除了解过吗？</p>
+</li>
+<li><p>redis 缓存淘汰策略</p>
+</li>
+</ol>
+</blockquote>
+<h3 id="7-2-三种不同的删除策略"><a href="#7-2-三种不同的删除策略" class="headerlink" title="7-2 三种不同的删除策略"></a>7-2 三种不同的删除策略</h3><blockquote>
+<p>问题域</p>
+<p><strong>如果一个键是过期的，那它到了过期时间之后是不是马上就从内存中被删除了呢？</strong></p>
+<p>肯定不是,如果不是，那过期之后到底什么时候被删除？？ 是一个什么操作</p>
+</blockquote>
+<h4 id="7-2-1-定时删除"><a href="#7-2-1-定时删除" class="headerlink" title="7-2-1 定时删除"></a>7-2-1 定时删除</h4><blockquote>
+<p>Redis 不可能时时刻刻遍历所有被设置了生存时间的key, 来检查数据是否已经到达过期时间，然后对他进行删除。</p>
+<p><strong>立即删除能把整内存中数据最大的新鲜度，因为它保证过期键值会在过期后马上被删除</strong>，其所占的<strong>内存也会随之释放</strong>，但是立即删除对 CPU 是最不友好的。因为删除操作会占用 CPU 的时间，如果刚好碰到 CPU 很忙的时候，比如正在做交集或者排序等计算的时候，这个时候会给 CPU 造成额外的压力，让 CPU 心累，有时候需要删除。忙死。。。。</p>
+<p>这个时候会产生大量的性能消耗，同时也会影响数据的读取操作。</p>
+<p><strong>总结：对 CPU 不友好，用处理器性能换存储空间（拿时间换空间）。</strong></p>
+</blockquote>
+<p>####7-2-2 惰性删除</p>
+<blockquote>
+<p><strong>数据到达过期时间，不做处理，等下次访问该数据时，</strong></p>
+<p>如果未过期，返回数据：</p>
+<p>发现已过期，删除，返回不存在</p>
+<p><strong>惰性删除策略的缺点是，它对内存最不友好的。</strong></p>
+<p><strong>如果一个键已经过期，而这个键仍保留在数据库中， 那么只要这个过期键不被删除，它所占用的内存就不会释放。</strong></p>
+<p>在使用惰性删除策略时，如果数据库有非常多的过期键，<strong>而这这些过期键恰好🈶️没有被访问的话</strong>，那么他们也许永远不会被删除（除非用户手动执行 flushdb）, 我们甚至可以将这种情况看作是一种内存泄漏 - 无用的垃圾数据占用了大量的内存，而服务器却不会自己去释放他们，这对于运行状态非常依赖与内存的 Redis 服务器来说，肯定不是一个好消息。</p>
+<p><strong>总结：对 memory 不友好，用存储空间换处理器性能（拿空间换时间）</strong></p>
+</blockquote>
+<h4 id="7-2-3-定期删除"><a href="#7-2-3-定期删除" class="headerlink" title="7-2-3 定期删除"></a>7-2-3 定期删除</h4><blockquote>
+<p><strong>上面两种方案都走极端</strong></p>
+<p><strong>定期删除策略每间隔一段时间执行一次删除过期键操作，并且通过限制删除操作执行的时间和频率来减少删除操作对 CPU 时间的影响。</strong></p>
+<p><strong>周期性轮询 redis 库中时效性数据，采用随机抽取的策略，利用过期数据占比的方式控制删除频度</strong></p>
+<p>特点1：CPU 性能占用设置有峰值， 检测频度可自己自定义设置。</p>
+<p>特点2: 内存压力不是很大，长期占用内存的冷数据会被持续清理</p>
+<p>总结：周期性抽查存储空间（随机抽查，重点抽查）</p>
+<p>举个例子</p>
+<p>redis 默认每100ms 检查，是否有过期的 key, 如果有 key 则删除。注意： <strong>redis 不是间隔 100ms 将所有的 key 检查一次而是随机抽取进行检查（如果每间隔 100ms , 全部 key 进行检查，redis 直接进入 icu ）. 如果只采用定期删除策略，会导致很多 key 到时间没有删除。</strong></p>
+<p>定期删除策略的难点是确定删除操作执行的时长和频率。如果删除操作执行得太频繁，或者执行操的时间太长，定期删除策略就会退化成定时删除策略，以至于 CPU 时间过多的消耗在删除过期键上，如果删除操作执行得太少，或者珍惜i给你的时间太短，定期删除策略又会和惰性删除策略一样，出现浪费内存的情况。因为，如果采用定期删除策略的话，服务器必须根据情况，合理的删除操作执行时间长短和执行频率。</p>
+<p><strong>总结： 定期抽样 key , 判断是否过期</strong></p>
+</blockquote>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><blockquote>
+<p>上述步骤都通过了，还有漏洞吗？</p>
+<p>1、定期删除，从来没有被抽查到</p>
+<p>2、惰性删除，也从来没有被点中过</p>
+<p>上述2步骤 &#x3D;&#x3D;&gt; 大量过期 key 堆积唉内存中，导致 redis 内存空间紧张或者很快耗尽。</p>
+<p><strong>必须要要有一个更好的兜底方案 。。。。。</strong></p>
+<p>内存淘汰策略</p>
+</blockquote>
+<h3 id="7-3-内存淘汰策略"><a href="#7-3-内存淘汰策略" class="headerlink" title="7-3 内存淘汰策略"></a>7-3 内存淘汰策略</h3><blockquote>
+<p>redis.conf配置<strong>maxmemory-policy</strong></p>
+<p>默认配置： noeviction</p>
+<p>中文总结</p>
+<p>1、noevication : 不会驱逐任何 key (默认)</p>
+<p>2、<strong>allkeys-lru: 对所有的 key 使用 lru 算法进行删除</strong></p>
+<p>3、volatile-lru: 对所有的设置了过期时间的 key 进行 lru 算法进行删除</p>
+<p>4、allkeys-random: 对所有 key 随机删除</p>
+<p>5、volatile-random: 对所有设置了过期时间的 key 随机删除</p>
+<p>6、volatile-ttl ：马上删除要过期的 key</p>
+<p><strong>7、allkeys-lfu: 对所有 key 进行 lfu 算法进行删除</strong></p>
+<p>8、volatile-lfu: 对所有设置了过期时间的 key 使用 lfu 算法进行删除</p>
+</blockquote>
+<h3 id="7-4-LRU和LFU的区别"><a href="#7-4-LRU和LFU的区别" class="headerlink" title="7-4 LRU和LFU的区别"></a>7-4 LRU和LFU的区别</h3><blockquote>
+<p>LRU和LFU都是<strong>内存管理的页面置换算法</strong>。 </p>
+</blockquote>
+<blockquote>
+<p>LRU，即：<strong>最近最少使用淘汰算法</strong>（Least Recently Used）<strong>。LRU是淘汰最长时间没有被使用的页面</strong>。</p>
+</blockquote>
+<blockquote>
+<p>LFU，即：<strong>最不经常使用淘汰算法</strong>（Least Frequently Used）。<strong>LFU是淘汰一段时间内，使用次数最少的页面</strong>。</p>
+<p>假设LFU方法的时期T为10分钟，访问如下页面所花的时间正好为10分钟，内存块大小为3。</p>
+<p>所需页面顺序依次如下：</p>
+<p>2  1  2  1  2  3  4 </p>
+<p>———————&gt;</p>
+<p>当需要使用页面4时，内存块中存储着1、2、3，内存块中没有页面4，就会发生缺页中断，而且此时内存块已满，需要进行页面置换。</p>
+<p>若按LRU算法，应替换掉页面1。因为页面1是最长时间没有被使用的了，页面2和3都在它后面被使用过。</p>
+<p>若按LFU算法，应换页面3。因为在这段时间内，页面1被访问了2次，页面2被访问了3次，而页面3只被访问了1次，一段时间内被访问的次数最少。</p>
+</blockquote>
+<h2 id="8-MySQL-与-Redis-缓存的同步方案"><a href="#8-MySQL-与-Redis-缓存的同步方案" class="headerlink" title="8. MySQL 与 Redis 缓存的同步方案"></a>8. MySQL 与 Redis 缓存的同步方案</h2><h3 id="8-1-延时双删策略"><a href="#8-1-延时双删策略" class="headerlink" title="8-1 延时双删策略"></a>8-1 延时双删策略</h3><blockquote>
+<p>读取缓存步骤一般没有什么问题，但是一旦涉及到数据更新：数据库和缓存更新，就容易出现缓存和数据库间的数据一致性问题。不管是先写数据库，再删除缓存；还是先删除缓存，再写库，都有可能出现数据不一致的情况。举个例子：</p>
+<p>1.如果<strong>删除</strong>了缓存<strong>Redis</strong>，还没有来得及<strong>写库</strong>MySQL，另一个线程就来读取，发现缓存为空，则去数据库中读取数据写入缓存，此时缓存中为脏数据。</p>
+<p>2.如果先<strong>写了库</strong>，在<strong>删除缓存</strong>前，写库的线程宕机了，没有删除掉缓存，则也会出现数据不一致情况。</p>
+<p>因为写和读是并发的，没法保证顺序,就会出现缓存和数据库的数据不一致的问题。如何解决？这里给出两个解决方案，先易后难，结合业务和技术代价选择使用。</p>
+<h4>延时双删策略</h4>
+
+<p><strong>在写库前后都进行redis.del(key)操作，并且设定合理的超时时间</strong>。具体步骤是：</p>
+<p>1）先删除缓存</p>
+<p>2）再写数据库</p>
+<p>3）休眠500毫秒（根据具体的业务时间来定）</p>
+<p>4）再次删除缓存。</p>
+<p><code>伪代码</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//写线程</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">update</span><span class="params">( String key, Object data )</span></span><br><span class="line">&#123;</span><br><span class="line">	redis.delKey( key );</span><br><span class="line">	db.updateData( data );</span><br><span class="line">	Thread.sleep( <span class="number">500</span> );<span class="comment">//等read线程</span></span><br><span class="line">	redis.delKey( key );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//读线程</span></span><br><span class="line"><span class="keyword">public</span> List&lt;User&gt; <span class="title function_">read</span><span class="params">(String key)</span>&#123;</span><br><span class="line">  <span class="comment">//先走redis</span></span><br><span class="line">  <span class="comment">//redis中如没有,走mysql</span></span><br><span class="line">  <span class="comment">//mysql-&gt;redis</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p><code>最后的写数据的休眠时间：则在读数据业务逻辑的耗时的基础上，加上几百ms即可。比如：休眠1秒。</code></p>
+<h4>设置缓存过期时间</h4>
+
+<p>从理论上来说，给缓存设置过期时间，是保证最终一致性的解决方案。所有的写操作以数据库为准，只要到达缓存过期时间，则后面的读请求自然会从数据库中读取新值然后回填缓存</p>
+<h3>弊端</h3>
+
+<p>结合<strong>双删策略+缓存超时设置</strong>，这样最差的情况就是在超时时间内<strong>数据存在不一致</strong>，而且又增加了<strong>写请求的耗时</strong>。</p>
+</blockquote>
+<h3 id="8-2-异步更新缓存-基于订阅binlog的同步机制"><a href="#8-2-异步更新缓存-基于订阅binlog的同步机制" class="headerlink" title="8-2 异步更新缓存(基于订阅binlog的同步机制)"></a>8-2 异步更新缓存(基于订阅binlog的同步机制)</h3><blockquote>
+<p>解析MySQL的binlog实现，将数据库中的数据同步到Redis.</p>
+<p><strong>1.  技术整体思路：</strong></p>
+<p>MySQL binlog增量订阅消费+消息队列+增量数据更新到redis</p>
+<ul>
+<li><strong>读Redis</strong>：热数据基本都在Redis</li>
+<li><strong>写MySQL</strong>:增删改都是操作MySQL</li>
+<li><strong>更新Redis数据</strong>：MySQL的数据操作binlog，来更新到Redis</li>
+</ul>
+<p><strong>2.Redis更新</strong></p>
+<p><strong>(1）数据操作主要分为两大块：</strong></p>
+<ul>
+<li>一个是全量(将全部数据一次写入到redis)</li>
+<li>一个是增量（实时更新）</li>
+</ul>
+<p>这里说的是增量,指的是mysql的update、insert、delete变更数据。</p>
+<p><strong>读取binlog后分析 ，利用消息队列,推送更新各台的redis缓存数据。</strong></p>
+<p>这样一旦MySQL中产生了新的写入、更新、删除等操作，就可以把binlog相关的消息推送至Redis，Redis再根据binlog中的记录，对Redis进行更新。</p>
+<p>其实这种机制，很类似MySQL的主从备份机制，因为MySQL的主备也是通过binlog来实现的数据一致性。</p>
+<p>这里可以结合使用canal(阿里的一款开源框架)，通过该框架可以对MySQL的binlog进行订阅，而canal正是模仿了mysql的slave数据库的备份请求，使得Redis的数据更新达到了相同的效果。</p>
+<p>当然，这里的消息推送工具你也可以采用别的第三方：kafka、rabbitMQ等来实现推送更新Redis!</p>
+<p><img src="/imgs/canal.png"> </p>
+</blockquote>
+<blockquote>
+<p><strong>canal 工作原理</strong></p>
+<ul>
+<li>canal 模拟 MySQL slave 的交互协议，伪装自己为 MySQL slave ，向 MySQL master 发送dump 协议</li>
+<li>MySQL master 收到 dump 请求，开始推送 binary log 给 slave (即 canal )</li>
+<li>canal 解析 binary log 对象(原始为 byte 流)</li>
+</ul>
+</blockquote>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title="0" data-url="http://link.hhtjim.com/163/22821023.mp3"></li>
+                        
+                    
+                        
+                            <li title="1" data-url="http://link.hhtjim.com/163/441116287.mp3"></li>
+                        
+                    
+                        
+                            <li title="2" data-url="http://link.hhtjim.com/163/509726618.mp3"></li>
+                        
+                    
+                        
+                            <li title="3" data-url="http://link.hhtjim.com/163/465262028.mp3"></li>
+                        
+                    
+                        
+                            <li title="4" data-url="http://link.hhtjim.com/163/1357220737.mp3"></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+        
+    <div id="gitalk-container" class="comment link"
+		data-enable="false"
+        data-ae="false"
+        data-ci=""
+        data-cs=""
+        data-r=""
+        data-o=""
+        data-a=""
+        data-d="false"
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Redis%E9%83%A8%E5%88%86"><span class="toc-number">1.</span> <span class="toc-text">1. Redis部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-number">1.1.</span> <span class="toc-text">1. Redis分布式锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Redis%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E5%92%8C%E5%87%BB%E7%A9%BF%E5%92%8C%E9%9B%AA%E5%B4%A9%E6%95%88%E5%BA%94-%E2%AD%90%EF%B8%8F%E2%AD%90%EF%B8%8F%E2%AD%90%EF%B8%8F"><span class="toc-number">1.2.</span> <span class="toc-text">2. Redis缓存穿透和击穿和雪崩效应 ⭐️⭐️⭐️</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 缓存穿透</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 缓存击穿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E9%9B%AA%E5%B4%A9%E6%95%88%E5%BA%94"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 雪崩效应</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Redis%E6%8C%81%E4%B9%85%E5%8C%96%E6%96%B9%E5%BC%8F%E2%AD%90%EF%B8%8F"><span class="toc-number">1.3.</span> <span class="toc-text">3. Redis持久化方式⭐️</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.4.</span> <span class="toc-text">4. Redis发布订阅模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F%E7%94%A8%E5%81%9A%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%92%8CRabbitmq%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.5.</span> <span class="toc-text">5. Redis发布订阅模式用做消息队列和Rabbitmq的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E8%B0%88%E8%B0%88%E5%AF%B9%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E7%9A%84%E8%AE%A4%E8%AF%86"><span class="toc-number">1.6.</span> <span class="toc-text">6. 谈谈对哨兵模式的认识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E9%80%89%E4%B8%BE%E8%A7%84%E5%88%99"><span class="toc-number">1.6.1.</span> <span class="toc-text">6-1. 选举规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E9%97%AE%E9%A2%98%E5%9F%9F"><span class="toc-number">1.6.2.</span> <span class="toc-text">7-1. 问题域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E4%B8%89%E7%A7%8D%E4%B8%8D%E5%90%8C%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5"><span class="toc-number">1.6.3.</span> <span class="toc-text">7-2 三种不同的删除策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-1-%E5%AE%9A%E6%97%B6%E5%88%A0%E9%99%A4"><span class="toc-number">1.6.3.1.</span> <span class="toc-text">7-2-1 定时删除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-3-%E5%AE%9A%E6%9C%9F%E5%88%A0%E9%99%A4"><span class="toc-number">1.6.3.2.</span> <span class="toc-text">7-2-3 定期删除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.3.3.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5"><span class="toc-number">1.6.4.</span> <span class="toc-text">7-3 内存淘汰策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-LRU%E5%92%8CLFU%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.6.5.</span> <span class="toc-text">7-4 LRU和LFU的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-MySQL-%E4%B8%8E-Redis-%E7%BC%93%E5%AD%98%E7%9A%84%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88"><span class="toc-number">1.7.</span> <span class="toc-text">8. MySQL 与 Redis 缓存的同步方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E5%BB%B6%E6%97%B6%E5%8F%8C%E5%88%A0%E7%AD%96%E7%95%A5"><span class="toc-number">1.7.1.</span> <span class="toc-text">8-1 延时双删策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.7.1.1.</span> <span class="toc-text">延时双删策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.7.1.2.</span> <span class="toc-text">设置缓存过期时间</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.7.2.</span> <span class="toc-text">弊端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E5%BC%82%E6%AD%A5%E6%9B%B4%E6%96%B0%E7%BC%93%E5%AD%98-%E5%9F%BA%E4%BA%8E%E8%AE%A2%E9%98%85binlog%E7%9A%84%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6"><span class="toc-number">1.7.3.</span> <span class="toc-text">8-2 异步更新缓存(基于订阅binlog的同步机制)</span></a></li></ol></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
